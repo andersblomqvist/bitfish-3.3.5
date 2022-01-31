@@ -116,7 +116,6 @@ namespace Bitfish
         /// <param name="config"></param>
         internal void UpdateOptions(Config cfg)
         {
-            CastKeyBox.SelectedIndex = cfg.CastKey;
             EnableTimerCheckBox.Checked = cfg.EnableTimer;
             TimerDuration.Value = cfg.TimerDuration;
             LogoutWhenDoneCheckBox.Checked = cfg.LogoutWhenDone;
@@ -128,12 +127,11 @@ namespace Bitfish
 
         private int GetCurrentOptionChecksum()
         {
-            return CastKeyBox.SelectedIndex |
-                ((EnableTimerCheckBox.Checked ? 1 : 0) << 4) |
-                ((LogoutWhenDoneCheckBox.Checked ? 1 : 0) << 5) |
-                ((LogoutWhenDeadCheckBox.Checked ? 1 : 0) << 6) |
-                ((HearthstoneCheckBox.Checked ? 1 : 0) << 7) |
-                ((int)TimerDuration.Value << 8);
+            return ((EnableTimerCheckBox.Checked ? 1 : 0) << 0) |
+                ((LogoutWhenDoneCheckBox.Checked ? 1 : 0) << 1) |
+                ((LogoutWhenDeadCheckBox.Checked ? 1 : 0) << 2) |
+                ((HearthstoneCheckBox.Checked ? 1 : 0) << 3) |
+                ((int)TimerDuration.Value << 4);
         }
 
         private void CompareChecksum()
@@ -144,11 +142,6 @@ namespace Bitfish
                 SaveOptions.Enabled = true;
             else
                 SaveOptions.Enabled = false;
-        }
-
-        private void CastKeyBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            CompareChecksum();
         }
 
         private void EnableTimerCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -188,7 +181,6 @@ namespace Bitfish
         {
             return new Config
             {
-                CastKey = CastKeyBox.SelectedIndex,
                 EnableTimer = EnableTimerCheckBox.Checked,
                 TimerDuration = (int)TimerDuration.Value,
                 LogoutWhenDone = LogoutWhenDoneCheckBox.Checked,

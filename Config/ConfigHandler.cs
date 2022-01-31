@@ -10,7 +10,6 @@ namespace Bitfish
 {
     public class Config
     {
-        public int CastKey { get; set; }
         public bool EnableTimer { get; set; }
         public int TimerDuration { get; set; }
         public bool LogoutWhenDone { get; set; }
@@ -38,7 +37,6 @@ namespace Bitfish
             // Default config
             config = new Config
             {
-                CastKey = 2,
                 EnableTimer = false,
                 TimerDuration = 0,
                 LogoutWhenDone = false,
@@ -66,6 +64,7 @@ namespace Bitfish
 
         internal void SaveConfig(Config cfg)
         {
+            config = cfg;
             var options = new JsonSerializerOptions { WriteIndented = true };
             string jsonString = JsonSerializer.Serialize(cfg, options);
             File.WriteAllText(path, jsonString);
@@ -74,20 +73,17 @@ namespace Bitfish
 
         internal void SetChecksum()
         {
-            // int 32
             // 0000 0000 0000 0000 0000 0000 0000 0000
-            //                             | |||| ^---- [0-3] Cast key
-            //                             | |||^------ [4] Enable timer
-            //                             | ||^------- [5] Logout when done
-            //                             | |^-------- [6] Logout when dead
-            //                             | ^--------- [7] Hearth stone when done
-            //                             ^----------- [8..] Timer duration
-            configChecksum = config.CastKey |
-                (config.EnableTimer ? 1 : 0) << 4 |
-                (config.LogoutWhenDone ? 1 : 0) << 5 |
-                (config.LogoutWhenDead ? 1 : 0) << 6 |
-                (config.HearthstoneWhenDone ? 1 : 0) << 7 |
-                config.TimerDuration << 8;
+            //                                  | |||^- [0] Enable timer
+            //                                  | ||^-- [1] Logout when done
+            //                                  | |^--- [2] Logout when dead
+            //                                  | ^---- [3] Hearthstone when done
+            //                                  ^------ [4..] Timer duration
+            configChecksum = (config.EnableTimer ? 1 : 0) |
+                (config.LogoutWhenDone ? 1 : 0) << 1 |
+                (config.LogoutWhenDead ? 1 : 0) << 2 |
+                (config.HearthstoneWhenDone ? 1 : 0) << 3 |
+                config.TimerDuration << 4;
         }
 
         internal int GetChecksum()

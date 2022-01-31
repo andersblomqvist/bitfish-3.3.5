@@ -98,18 +98,14 @@ namespace Bitfish
             int fails = 0;
 
             Point fishingPosition = mem.ReadPlayerPosition();
-            int playerHealth = mem.ReadPlayerHealth();
 
             while(true && fails < 3)
             {
                 if(CancellationPending(worker, e) || HasPlayerMoved(fishingPosition))
                     break;
 
-                if (session.seconds >= config.TimerDuration * 60)
+                if (config.EnableTimer && session.seconds >= config.TimerDuration * 60)
                     break;
-
-                if (mem.ReadPlayerHealth() < playerHealth)
-                    Console.WriteLine("We have taken damage!");
 
                 // Start cast
                 BeginFishing();

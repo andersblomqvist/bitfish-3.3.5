@@ -42,8 +42,6 @@ namespace Bitfish
             this.HearthstoneCheckBox = new System.Windows.Forms.CheckBox();
             this.LogoutWhenDoneCheckBox = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.CastKeyBox = new System.Windows.Forms.ComboBox();
             this.EnableTimerCheckBox = new System.Windows.Forms.CheckBox();
             this.CurrentSessionBox = new System.Windows.Forms.GroupBox();
             this.OpenLogButton = new System.Windows.Forms.Button();
@@ -108,12 +106,10 @@ namespace Bitfish
             this.groupBox1.Controls.Add(this.HearthstoneCheckBox);
             this.groupBox1.Controls.Add(this.LogoutWhenDoneCheckBox);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.CastKeyBox);
             this.groupBox1.Controls.Add(this.EnableTimerCheckBox);
             this.groupBox1.Location = new System.Drawing.Point(162, 34);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(197, 171);
+            this.groupBox1.Size = new System.Drawing.Size(197, 143);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Options";
@@ -121,7 +117,7 @@ namespace Bitfish
             // SaveOptions
             // 
             this.SaveOptions.Enabled = false;
-            this.SaveOptions.Location = new System.Drawing.Point(9, 138);
+            this.SaveOptions.Location = new System.Drawing.Point(9, 112);
             this.SaveOptions.Name = "SaveOptions";
             this.SaveOptions.Size = new System.Drawing.Size(182, 24);
             this.SaveOptions.TabIndex = 7;
@@ -131,7 +127,7 @@ namespace Bitfish
             // 
             // TimerDuration
             // 
-            this.TimerDuration.Location = new System.Drawing.Point(97, 44);
+            this.TimerDuration.Location = new System.Drawing.Point(97, 18);
             this.TimerDuration.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -151,7 +147,7 @@ namespace Bitfish
             // LogoutWhenDeadCheckBox
             // 
             this.LogoutWhenDeadCheckBox.AutoSize = true;
-            this.LogoutWhenDeadCheckBox.Location = new System.Drawing.Point(9, 92);
+            this.LogoutWhenDeadCheckBox.Location = new System.Drawing.Point(9, 66);
             this.LogoutWhenDeadCheckBox.Name = "LogoutWhenDeadCheckBox";
             this.LogoutWhenDeadCheckBox.Size = new System.Drawing.Size(94, 17);
             this.LogoutWhenDeadCheckBox.TabIndex = 11;
@@ -162,7 +158,7 @@ namespace Bitfish
             // HearthstoneCheckBox
             // 
             this.HearthstoneCheckBox.AutoSize = true;
-            this.HearthstoneCheckBox.Location = new System.Drawing.Point(9, 115);
+            this.HearthstoneCheckBox.Location = new System.Drawing.Point(9, 89);
             this.HearthstoneCheckBox.Name = "HearthstoneCheckBox";
             this.HearthstoneCheckBox.Size = new System.Drawing.Size(140, 17);
             this.HearthstoneCheckBox.TabIndex = 12;
@@ -173,7 +169,7 @@ namespace Bitfish
             // LogoutWhenDoneCheckBox
             // 
             this.LogoutWhenDoneCheckBox.AutoSize = true;
-            this.LogoutWhenDoneCheckBox.Location = new System.Drawing.Point(9, 69);
+            this.LogoutWhenDoneCheckBox.Location = new System.Drawing.Point(9, 43);
             this.LogoutWhenDoneCheckBox.Name = "LogoutWhenDoneCheckBox";
             this.LogoutWhenDoneCheckBox.Size = new System.Drawing.Size(115, 17);
             this.LogoutWhenDoneCheckBox.TabIndex = 10;
@@ -184,45 +180,16 @@ namespace Bitfish
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(145, 47);
+            this.label3.Location = new System.Drawing.Point(145, 21);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(44, 13);
             this.label3.TabIndex = 9;
             this.label3.Text = "Minutes";
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 22);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(48, 13);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "Cast key";
-            // 
-            // CastKeyBox
-            // 
-            this.CastKeyBox.FormattingEnabled = true;
-            this.CastKeyBox.Items.AddRange(new object[] {
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9"});
-            this.CastKeyBox.Location = new System.Drawing.Point(57, 19);
-            this.CastKeyBox.Name = "CastKeyBox";
-            this.CastKeyBox.Size = new System.Drawing.Size(46, 21);
-            this.CastKeyBox.TabIndex = 6;
-            this.CastKeyBox.SelectedIndexChanged += new System.EventHandler(this.CastKeyBox_SelectedIndexChanged);
-            // 
             // EnableTimerCheckBox
             // 
             this.EnableTimerCheckBox.AutoSize = true;
-            this.EnableTimerCheckBox.Location = new System.Drawing.Point(9, 46);
+            this.EnableTimerCheckBox.Location = new System.Drawing.Point(9, 20);
             this.EnableTimerCheckBox.Name = "EnableTimerCheckBox";
             this.EnableTimerCheckBox.Size = new System.Drawing.Size(88, 17);
             this.EnableTimerCheckBox.TabIndex = 0;
@@ -237,7 +204,7 @@ namespace Bitfish
             this.CurrentSessionBox.Controls.Add(this.FishCaughtLabel);
             this.CurrentSessionBox.Location = new System.Drawing.Point(7, 75);
             this.CurrentSessionBox.Name = "CurrentSessionBox";
-            this.CurrentSessionBox.Size = new System.Drawing.Size(149, 130);
+            this.CurrentSessionBox.Size = new System.Drawing.Size(149, 102);
             this.CurrentSessionBox.TabIndex = 14;
             this.CurrentSessionBox.TabStop = false;
             this.CurrentSessionBox.Text = "Current Session";
@@ -246,7 +213,7 @@ namespace Bitfish
             // OpenLogButton
             // 
             this.OpenLogButton.Enabled = false;
-            this.OpenLogButton.Location = new System.Drawing.Point(6, 97);
+            this.OpenLogButton.Location = new System.Drawing.Point(6, 71);
             this.OpenLogButton.Name = "OpenLogButton";
             this.OpenLogButton.Size = new System.Drawing.Size(137, 24);
             this.OpenLogButton.TabIndex = 6;
@@ -266,7 +233,7 @@ namespace Bitfish
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(371, 210);
+            this.ClientSize = new System.Drawing.Size(367, 182);
             this.Controls.Add(this.CurrentSessionBox);
             this.Controls.Add(this.StartButton);
             this.Controls.Add(this.StopButton);
@@ -296,8 +263,6 @@ namespace Bitfish
         private System.Windows.Forms.Label FishCaughtLabel;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox EnableTimerCheckBox;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox CastKeyBox;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox LogoutWhenDoneCheckBox;
         private System.Windows.Forms.CheckBox LogoutWhenDeadCheckBox;

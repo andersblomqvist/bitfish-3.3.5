@@ -94,22 +94,6 @@ namespace Bitfish
                 blackMagic.ReadFloat(Offsets.Player.POS_Z));
         }
 
-        /// <summary>
-        /// Returns the player health. If it failed return -1
-        /// </summary>
-        /// <returns></returns>
-        internal int ReadPlayerHealth()
-        {
-            if (objManager.GetPlayerPointer() == 0)
-                objManager.Dump(null);
-
-            int health = blackMagic.ReadInt(objManager.GetPlayerPointer() + Offsets.ObjManager.HEALTH_OFFSET);
-            if (health < 0 && health > 60000)
-                return -1;
-            else
-                return health;
-        }
-
         internal bool IsReady() { return ready; }
     }
 }

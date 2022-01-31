@@ -88,43 +88,11 @@ namespace Bitfish
                     }
                 }
 
-                else if (type == (int)WowObjectType.Player)
-                {
-                    float px = blackMagic.ReadFloat(Offsets.Player.POS_X);
-                    float py = blackMagic.ReadFloat(Offsets.Player.POS_Y);
-                    float pz = blackMagic.ReadFloat(Offsets.Player.POS_Z);
-
-                    float x = blackMagic.ReadFloat(curr + Offsets.ObjManager.X_OFFSET);
-                    float y = blackMagic.ReadFloat(curr + Offsets.ObjManager.Y_OFFSET);
-                    float z = blackMagic.ReadFloat(curr + Offsets.ObjManager.Z_OFFSET);
-
-                    // check if this player have the same coords as us
-                    if (px.Equals(x) && py.Equals(y) && pz.Equals(z))
-                    {
-                        playerPtr = curr;
-                        Console.WriteLine("Found player pointer");
-                        return null;
-                    }
-                        
-                }
-
                 curr += Offsets.ObjManager.NEXT;
                 curr = blackMagic.ReadUInt(curr);
             }
             Console.WriteLine("Could not find any objects!");
             return null;
-        }
-
-        /// <summary>
-        /// Returns the address to player object which comes from the object manager list
-        /// </summary>
-        /// <returns>address, otherwise 0</returns>
-        internal uint GetPlayerPointer()
-        {
-            if (playerPtr != 0)
-                return playerPtr;
-            else
-                return 0;
         }
     }
 }
