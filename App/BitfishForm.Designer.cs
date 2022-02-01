@@ -49,6 +49,7 @@ namespace Bitfish
             this.ConfirmProcessButton = new System.Windows.Forms.Button();
             this.WowIDList = new System.Windows.Forms.ComboBox();
             this.ProcIdLabel = new System.Windows.Forms.Label();
+            this.InventoryFullCheckbox = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TimerDuration)).BeginInit();
             this.CurrentSessionBox.SuspendLayout();
@@ -103,6 +104,7 @@ namespace Bitfish
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.InventoryFullCheckbox);
             this.groupBox1.Controls.Add(this.SaveOptions);
             this.groupBox1.Controls.Add(this.TimerDuration);
             this.groupBox1.Controls.Add(this.LogoutWhenDeadCheckBox);
@@ -112,7 +114,7 @@ namespace Bitfish
             this.groupBox1.Controls.Add(this.EnableTimerCheckBox);
             this.groupBox1.Location = new System.Drawing.Point(162, 34);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(197, 143);
+            this.groupBox1.Size = new System.Drawing.Size(197, 164);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Options";
@@ -120,7 +122,7 @@ namespace Bitfish
             // SaveOptions
             // 
             this.SaveOptions.Enabled = false;
-            this.SaveOptions.Location = new System.Drawing.Point(9, 112);
+            this.SaveOptions.Location = new System.Drawing.Point(9, 135);
             this.SaveOptions.Name = "SaveOptions";
             this.SaveOptions.Size = new System.Drawing.Size(182, 24);
             this.SaveOptions.TabIndex = 7;
@@ -207,7 +209,7 @@ namespace Bitfish
             this.CurrentSessionBox.Controls.Add(this.FishCaughtLabel);
             this.CurrentSessionBox.Location = new System.Drawing.Point(7, 75);
             this.CurrentSessionBox.Name = "CurrentSessionBox";
-            this.CurrentSessionBox.Size = new System.Drawing.Size(149, 102);
+            this.CurrentSessionBox.Size = new System.Drawing.Size(149, 123);
             this.CurrentSessionBox.TabIndex = 14;
             this.CurrentSessionBox.TabStop = false;
             this.CurrentSessionBox.Text = "Current Session";
@@ -216,7 +218,7 @@ namespace Bitfish
             // OpenLogButton
             // 
             this.OpenLogButton.Enabled = false;
-            this.OpenLogButton.Location = new System.Drawing.Point(6, 71);
+            this.OpenLogButton.Location = new System.Drawing.Point(6, 93);
             this.OpenLogButton.Name = "OpenLogButton";
             this.OpenLogButton.Size = new System.Drawing.Size(137, 24);
             this.OpenLogButton.TabIndex = 6;
@@ -260,11 +262,22 @@ namespace Bitfish
             this.ProcIdLabel.Text = "Process ID: 7862";
             this.ProcIdLabel.Visible = false;
             // 
+            // InventoryFullCheckbox
+            // 
+            this.InventoryFullCheckbox.AutoSize = true;
+            this.InventoryFullCheckbox.Location = new System.Drawing.Point(9, 112);
+            this.InventoryFullCheckbox.Name = "InventoryFullCheckbox";
+            this.InventoryFullCheckbox.Size = new System.Drawing.Size(139, 17);
+            this.InventoryFullCheckbox.TabIndex = 13;
+            this.InventoryFullCheckbox.Text = "Stop when inventory full";
+            this.InventoryFullCheckbox.UseVisualStyleBackColor = true;
+            this.InventoryFullCheckbox.CheckedChanged += new System.EventHandler(this.InventoryFullCheckbox_CheckedChanged);
+            // 
             // BitfishForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(367, 182);
+            this.ClientSize = new System.Drawing.Size(368, 203);
             this.Controls.Add(this.ProcIdLabel);
             this.Controls.Add(this.WowIDList);
             this.Controls.Add(this.ConfirmProcessButton);
@@ -309,6 +322,7 @@ namespace Bitfish
         private System.Windows.Forms.Button ConfirmProcessButton;
         private System.Windows.Forms.ComboBox WowIDList;
         private System.Windows.Forms.Label ProcIdLabel;
+        private System.Windows.Forms.CheckBox InventoryFullCheckbox;
     }
 }
 

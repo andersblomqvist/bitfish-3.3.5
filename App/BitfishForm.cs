@@ -172,17 +172,19 @@ namespace Bitfish
             LogoutWhenDoneCheckBox.Checked = cfg.LogoutWhenDone;
             LogoutWhenDeadCheckBox.Checked = cfg.LogoutWhenDead;
             HearthstoneCheckBox.Checked = cfg.HearthstoneWhenDone;
+            InventoryFullCheckbox.Checked = cfg.StopIfInventoryFull;
         }
 
         #region OPTIONS
 
         private int GetCurrentOptionChecksum()
         {
-            return ((EnableTimerCheckBox.Checked ? 1 : 0) << 0) |
-                ((LogoutWhenDoneCheckBox.Checked ? 1 : 0) << 1) |
-                ((LogoutWhenDeadCheckBox.Checked ? 1 : 0) << 2) |
-                ((HearthstoneCheckBox.Checked ? 1 : 0) << 3) |
-                ((int)TimerDuration.Value << 4);
+            return ((EnableTimerCheckBox.Checked ? 1 : 0) << 0 |
+                (LogoutWhenDoneCheckBox.Checked ? 1 : 0) << 1 |
+                (LogoutWhenDeadCheckBox.Checked ? 1 : 0) << 2 |
+                (HearthstoneCheckBox.Checked ? 1 : 0) << 3 |
+                (InventoryFullCheckbox.Checked ? 1 : 0) << 4 |
+                (int)TimerDuration.Value << 5);
         }
 
         private void CompareChecksum()
@@ -219,6 +221,11 @@ namespace Bitfish
             CompareChecksum();
         }
 
+        private void InventoryFullCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            CompareChecksum();
+        }
+
         private void SaveOptions_Click(object sender, EventArgs e)
         {
             Config config = ReadOptionValues();
@@ -235,7 +242,8 @@ namespace Bitfish
                 TimerDuration = (int)TimerDuration.Value,
                 LogoutWhenDone = LogoutWhenDoneCheckBox.Checked,
                 LogoutWhenDead = LogoutWhenDeadCheckBox.Checked,
-                HearthstoneWhenDone = HearthstoneCheckBox.Checked
+                HearthstoneWhenDone = HearthstoneCheckBox.Checked,
+                StopIfInventoryFull = InventoryFullCheckbox.Checked
             };
         }
 

@@ -16,9 +16,9 @@ namespace Bitfish
     /// Timer               Finished
     /// Hearthstone         Finished
     /// Logout              Finished
-    /// HP/death check
-    /// Spirit Release
-    /// Logout when dead
+    /// HP/death check      Finished   
+    /// Spirit Release      Finished
+    /// Logout when dead    Finished
     /// Stats               kinda
     /// Improved GUI
     /// </summary>
@@ -158,6 +158,17 @@ namespace Bitfish
                     prevBobbers.Enqueue(bobber.guid);
                     if (prevBobbers.Count > 5)
                         prevBobbers.Dequeue();
+
+                    // check slots left
+                    if(config.StopIfInventoryFull)
+                    {
+                        int slots = GetFreeInventorySlots();
+                        if(slots == 0)
+                        {
+                            Console.WriteLine("Inventory has no free slots left, stopping");
+                            break;
+                        }
+                    }
                 } 
                 else
                 {
@@ -306,6 +317,22 @@ namespace Bitfish
             int health = mem.ReadPlayerHealth();
             if (health <= 1) return true;
             else return false;
+        }
+
+        /// <summary>
+        /// Reads the number of free inventory slots available
+        /// </summary>
+        /// <returns>slots available in bag</returns>
+        private int GetFreeInventorySlots()
+        {
+            int slots = 0;
+            for(int i = 0; i < 5; i++)
+            {
+                mem.LuaDoString($"freeSlots = GetContainerNumFreeSlots({i})");
+                string res = mem.LuaGetLocalizedText("freeSlots");
+                slots += Convert.ToInt32(res);
+            }
+            return slots;
         }
 
         /// <summary>

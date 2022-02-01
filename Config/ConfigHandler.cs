@@ -15,6 +15,7 @@ namespace Bitfish
         public bool LogoutWhenDone { get; set; }
         public bool LogoutWhenDead { get; set; }
         public bool HearthstoneWhenDone { get; set; }
+        public bool StopIfInventoryFull { get; set; }
     }
 
     public class ConfigHandler
@@ -74,16 +75,18 @@ namespace Bitfish
         internal void SetChecksum()
         {
             // 0000 0000 0000 0000 0000 0000 0000 0000
-            //                                  | |||^- [0] Enable timer
-            //                                  | ||^-- [1] Logout when done
-            //                                  | |^--- [2] Logout when dead
-            //                                  | ^---- [3] Hearthstone when done
-            //                                  ^------ [4..] Timer duration
+            //                                 || |||^- [0] Enable timer
+            //                                 || ||^-- [1] Logout when done
+            //                                 || |^--- [2] Logout when dead
+            //                                 || ^---- [3] Hearthstone when done
+            //                                 |^------ [4] Inventory full
+            //                                 ^------- [4..] Timer duration
             configChecksum = (config.EnableTimer ? 1 : 0) |
                 (config.LogoutWhenDone ? 1 : 0) << 1 |
                 (config.LogoutWhenDead ? 1 : 0) << 2 |
                 (config.HearthstoneWhenDone ? 1 : 0) << 3 |
-                config.TimerDuration << 4;
+                (config.StopIfInventoryFull ? 1 : 0) << 4 |
+                config.TimerDuration << 5;
         }
 
         internal int GetChecksum()
