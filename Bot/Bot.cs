@@ -38,6 +38,7 @@ namespace Bitfish
         private struct Stats
         {
             public int seconds;
+            public int startTime;
             public int fishCaught;
         }
 
@@ -79,6 +80,13 @@ namespace Bitfish
             // Create a background worker and start fishing
             if (!worker.IsBusy)
             {
+                if (config.AutoEquip)
+                {
+                    string pole = BitfishForm.instance.GetFishingPole();
+                    Console.WriteLine($"Equipping: {pole}");
+                    mem.LuaDoString($"EquipItemByName(\"{pole}\")");
+                }
+
                 worker.RunWorkerAsync();
                 clock.RunWorkerAsync();
             }
@@ -105,13 +113,18 @@ namespace Bitfish
             int fails = 0;
 
             Point fishingPosition = mem.ReadPlayerPosition();
+            session.startTime = session.seconds;
+
+            // wait a global for fish pole equip
+            if (config.AutoEquip)
+                Thread.Sleep(1000);
 
             while (true && fails < maxFails)
             {
                 if (CancellationPending(worker, e) || HasPlayerMoved(fishingPosition) || IsPlayerDead())
                     break;
 
-                if (config.EnableTimer && session.seconds >= config.TimerDuration * 60)
+                if (TimerExpired())
                     break;
 
                 // Start cast
@@ -268,6 +281,21 @@ namespace Bitfish
             }
             else if (config.LogoutWhenDone)
                 mem.LuaDoString("Logout()");
+        }
+
+        /// <summary>
+        /// Checks if the timer has expired
+        /// </summary>
+        /// <returns></returns>
+        private bool TimerExpired()
+        {
+            if (!config.EnableTimer)
+                return false;
+
+            if (session.seconds > config.TimerDuration * 60 + session.startTime)
+                return true;
+            else
+                return false;
         }
 
         /// <summary>

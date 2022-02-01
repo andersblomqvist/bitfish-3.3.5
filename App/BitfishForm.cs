@@ -106,6 +106,11 @@ namespace Bitfish
             OpenProcess(procId);
         }
 
+        internal string GetFishingPole()
+        {
+            return FishingPoleSelector.GetItemText(FishingPoleSelector.SelectedItem);
+        }
+
         private void StartButton_Click(object sender, EventArgs e)
         {
             bot.Start();
@@ -173,20 +178,34 @@ namespace Bitfish
             LogoutWhenDeadCheckBox.Checked = cfg.LogoutWhenDead;
             HearthstoneCheckBox.Checked = cfg.HearthstoneWhenDone;
             InventoryFullCheckbox.Checked = cfg.StopIfInventoryFull;
+            AutoEquipCheckbox.Checked = cfg.AutoEquip;
+            FishingPoleSelector.SelectedIndex = cfg.FishingPole;
+
+            if (!AutoEquipCheckbox.Checked)
+                FishingPoleSelector.Enabled = false;
+            else
+                FishingPoleSelector.Enabled = true;
         }
 
         #region OPTIONS
 
         private int GetCurrentOptionChecksum()
         {
-            return ((EnableTimerCheckBox.Checked ? 1 : 0) << 0 |
+            // see comment in ConfigHandler.cs for details
+            return (EnableTimerCheckBox.Checked ? 1 : 0) << 0 |
                 (LogoutWhenDoneCheckBox.Checked ? 1 : 0) << 1 |
                 (LogoutWhenDeadCheckBox.Checked ? 1 : 0) << 2 |
                 (HearthstoneCheckBox.Checked ? 1 : 0) << 3 |
                 (InventoryFullCheckbox.Checked ? 1 : 0) << 4 |
-                (int)TimerDuration.Value << 5);
+                (AutoEquipCheckbox.Checked ? 1 : 0) << 5 |
+                (FishingPoleSelector.SelectedIndex & 0xF) << 6 |
+                (int)TimerDuration.Value << 10;
         }
 
+        /// <summary>
+        /// Compares the saved checksum which comes from config file to the current state of options
+        /// If they are not the same we enable the Save Button so user can overwrite the config file.
+        /// </summary>
         private void CompareChecksum()
         {
             // Console.WriteLine($"Compaing {GetCurrentOptionChecksum():X} with {savedChecksum:X}");
@@ -196,36 +215,33 @@ namespace Bitfish
                 SaveOptions.Enabled = false;
         }
 
-        private void EnableTimerCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void EnableTimerCheckBox_CheckedChanged(object sender, EventArgs e) { CompareChecksum(); }
+        private void TimerDuration_ValueChanged(object sender, EventArgs e) { CompareChecksum(); }
+        private void LogoutWhenDoneCheckBox_CheckedChanged(object sender, EventArgs e) { CompareChecksum(); }
+        private void LogoutWhenDeadCheckBox_CheckedChanged(object sender, EventArgs e) { CompareChecksum(); }
+        private void HearthstoneCheckBox_CheckedChanged(object sender, EventArgs e) { CompareChecksum(); }
+        private void InventoryFullCheckbox_CheckedChanged(object sender, EventArgs e) { CompareChecksum(); }
+        private void FishingPoleSelector_SelectedIndexChanged(object sender, EventArgs e) { CompareChecksum(); }
+
+        private void AutoEquipCheckbox_CheckedChanged(object sender, EventArgs e) 
         {
             CompareChecksum();
+
+            // Toggle the fishing pole selector
+            if(AutoEquipCheckbox.Checked)
+            {
+                FishingPoleSelector.Enabled = true;
+                FishingPoleSelector.SelectedIndex = 0;
+            }
+            else
+                FishingPoleSelector.Enabled = false;
         }
 
-        private void TimerDuration_ValueChanged(object sender, EventArgs e)
-        {
-            CompareChecksum();
-        }
-
-        private void LogoutWhenDoneCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            CompareChecksum();
-        }
-
-        private void LogoutWhenDeadCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            CompareChecksum();
-        }
-
-        private void HearthstoneCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            CompareChecksum();
-        }
-
-        private void InventoryFullCheckbox_CheckedChanged(object sender, EventArgs e)
-        {
-            CompareChecksum();
-        }
-
+        /// <summary>
+        /// Saves current option values to config file and sets current config to it.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SaveOptions_Click(object sender, EventArgs e)
         {
             Config config = ReadOptionValues();
@@ -234,6 +250,10 @@ namespace Bitfish
             CompareChecksum();
         }
 
+        /// <summary>
+        /// Reads current option values and creates a config out of it
+        /// </summary>
+        /// <returns>Config with current option values</returns>
         internal Config ReadOptionValues()
         {
             return new Config
@@ -243,7 +263,9 @@ namespace Bitfish
                 LogoutWhenDone = LogoutWhenDoneCheckBox.Checked,
                 LogoutWhenDead = LogoutWhenDeadCheckBox.Checked,
                 HearthstoneWhenDone = HearthstoneCheckBox.Checked,
-                StopIfInventoryFull = InventoryFullCheckbox.Checked
+                StopIfInventoryFull = InventoryFullCheckbox.Checked,
+                AutoEquip = AutoEquipCheckbox.Checked,
+                FishingPole = FishingPoleSelector.SelectedIndex
             };
         }
 
