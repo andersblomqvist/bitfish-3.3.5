@@ -35,10 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationManifest>App\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>bitfish-icon-256.ico</ApplicationIcon>
+    <ApplicationIcon>App\bitfish-icon-256.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BlackMagic">
@@ -104,13 +104,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BitfishForm.cs">
+    <Compile Include="App\BitfishForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BitfishForm.Designer.cs">
+    <Compile Include="App\BitfishForm.Designer.cs">
       <DependentUpon>BitfishForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Bot.cs" />
+    <Compile Include="Bot\Bot.cs" />
     <Compile Include="Common\GameObject.cs" />
     <Compile Include="Common\KeyHandler.cs" />
     <Compile Include="Config\ConfigHandler.cs" />
@@ -122,7 +122,7 @@
     <Compile Include="Memory\Lua.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="BitfishForm.resx">
+    <EmbeddedResource Include="App\BitfishForm.resx">
       <DependentUpon>BitfishForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -134,7 +134,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="app.manifest" />
+    <None Include="App\app.manifest" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -147,13 +147,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App\App.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="BlackMagic\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bitfish-icon-256.ico" />
+    <Content Include="App\bitfish-icon-256.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\herbhiker\packages\System.Text.Json.6.0.1\build\System.Text.Json.targets" Condition="Exists('..\herbhiker\packages\System.Text.Json.6.0.1\build\System.Text.Json.targets')" />
