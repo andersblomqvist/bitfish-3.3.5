@@ -46,6 +46,9 @@ namespace Bitfish
             this.CurrentSessionBox = new System.Windows.Forms.GroupBox();
             this.OpenLogButton = new System.Windows.Forms.Button();
             this.TimerLabel = new System.Windows.Forms.Label();
+            this.ConfirmProcessButton = new System.Windows.Forms.Button();
+            this.WowIDList = new System.Windows.Forms.ComboBox();
+            this.ProcIdLabel = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TimerDuration)).BeginInit();
             this.CurrentSessionBox.SuspendLayout();
@@ -229,11 +232,42 @@ namespace Bitfish
             this.TimerLabel.TabIndex = 5;
             this.TimerLabel.Text = "Time:";
             // 
+            // ConfirmProcessButton
+            // 
+            this.ConfirmProcessButton.Location = new System.Drawing.Point(284, 9);
+            this.ConfirmProcessButton.Name = "ConfirmProcessButton";
+            this.ConfirmProcessButton.Size = new System.Drawing.Size(75, 23);
+            this.ConfirmProcessButton.TabIndex = 15;
+            this.ConfirmProcessButton.Text = "Confirm";
+            this.ConfirmProcessButton.UseVisualStyleBackColor = true;
+            this.ConfirmProcessButton.Click += new System.EventHandler(this.ConfirmProcessButton_Click);
+            // 
+            // WowIDList
+            // 
+            this.WowIDList.FormattingEnabled = true;
+            this.WowIDList.Location = new System.Drawing.Point(217, 9);
+            this.WowIDList.Name = "WowIDList";
+            this.WowIDList.Size = new System.Drawing.Size(61, 21);
+            this.WowIDList.TabIndex = 16;
+            // 
+            // ProcIdLabel
+            // 
+            this.ProcIdLabel.AutoSize = true;
+            this.ProcIdLabel.Location = new System.Drawing.Point(266, 14);
+            this.ProcIdLabel.Name = "ProcIdLabel";
+            this.ProcIdLabel.Size = new System.Drawing.Size(89, 13);
+            this.ProcIdLabel.TabIndex = 17;
+            this.ProcIdLabel.Text = "Process ID: 7862";
+            this.ProcIdLabel.Visible = false;
+            // 
             // BitfishForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(367, 182);
+            this.Controls.Add(this.ProcIdLabel);
+            this.Controls.Add(this.WowIDList);
+            this.Controls.Add(this.ConfirmProcessButton);
             this.Controls.Add(this.CurrentSessionBox);
             this.Controls.Add(this.StartButton);
             this.Controls.Add(this.StopButton);
@@ -272,6 +306,9 @@ namespace Bitfish
         private System.Windows.Forms.Label TimerLabel;
         private System.Windows.Forms.Button OpenLogButton;
         private System.Windows.Forms.Button SaveOptions;
+        private System.Windows.Forms.Button ConfirmProcessButton;
+        private System.Windows.Forms.ComboBox WowIDList;
+        private System.Windows.Forms.Label ProcIdLabel;
     }
 }
 

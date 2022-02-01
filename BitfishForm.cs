@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.IO;
+using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace Bitfish
 {
@@ -12,6 +13,9 @@ namespace Bitfish
         private readonly MemoryReader memoryReader;
         private readonly ConfigHandler configHandler;
         private readonly Bot bot;
+
+        private List<Process> processList;
+        private List<Process> wowList;
 
         private int savedChecksum;
 
@@ -32,20 +36,58 @@ namespace Bitfish
 
         private void BitfishOnLoad(object sender, EventArgs e)
         {
+            // Search for processes.
+            processList = new List<Process>(Process.GetProcessesByName("Wow"));
+            wowList = new List<Process>();
+            int id = 0;
+            foreach (Process p in processList)
+            {
+                Console.WriteLine("Found Wow process! pid={0}", p.Id);
+                id = p.Id;
+                wowList.Add(p);
+            }
+
+            if (wowList.Count > 1)
+            {
+                Console.WriteLine("Multiple process was found"); ;
+                for (int i = 0; i < wowList.Count; i++)
+                    WowIDList.Items.Add(wowList[i].Id);
+                WowIDList.SelectedIndex = 0;
+                WowIDList.Visible = true;
+                ConfirmProcessButton.Visible = true;
+                StatusLabel.Text = "Please choose a specific process >";
+                StatusLabel.ForeColor = Color.Orange;
+            }
+            else if(wowList.Count <= 0)
+            {
+                Console.WriteLine("No processes was found.");
+            }
+            else
+            {
+                OpenProcess(id);
+            }
+        }
+
+        private void OpenProcess(int id)
+        {
             // Open process
-            bool open = memoryReader.OpenProcess();
+            bool open = memoryReader.OpenProcess(id);
             bool hooked = false;
-            if(open)
+            if (open)
             {
                 Console.WriteLine("Found Wow.exe process. Initializing ...");
                 hooked = memoryReader.Init();
             }
 
-            if(open && hooked)
+            if (open && hooked)
             {
                 StatusLabel.Text = "Ready";
                 StatusLabel.ForeColor = Color.Green;
                 Console.WriteLine("Bot is ready");
+                WowIDList.Visible = false;
+                ConfirmProcessButton.Visible = false;
+                ProcIdLabel.Text = $"Process ID: {id}";
+                ProcIdLabel.Visible = true;
             }
             else
             {
@@ -53,6 +95,15 @@ namespace Bitfish
                 StatusLabel.Text = "Failed. Start Wow and enter world";
                 StatusLabel.ForeColor = Color.Red;
             }
+        }
+
+        private void ConfirmProcessButton_Click(object sender, EventArgs e)
+        {
+            int index = WowIDList.SelectedIndex;
+            if (index == -1)
+                index = 0;
+            int procId = wowList[index].Id;
+            OpenProcess(procId);
         }
 
         private void StartButton_Click(object sender, EventArgs e)
@@ -136,8 +187,7 @@ namespace Bitfish
 
         private void CompareChecksum()
         {
-            Console.WriteLine($"Compaing {GetCurrentOptionChecksum():X} with {savedChecksum:X}");
-
+            // Console.WriteLine($"Compaing {GetCurrentOptionChecksum():X} with {savedChecksum:X}");
             if (GetCurrentOptionChecksum() != savedChecksum)
                 SaveOptions.Enabled = true;
             else

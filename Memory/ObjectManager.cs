@@ -9,7 +9,7 @@ namespace Bitfish
 {
     public class ObjectManager
     {
-        public enum WowObjectType
+        public enum WowObjectType : int
         {
             None = 0,
             Item = 1,
@@ -23,7 +23,7 @@ namespace Bitfish
             AreaTrigger = 9
         }
 
-        public const int SIZE = 4096;
+        public const int SIZE = 512;
 
         private readonly BlackMagic blackMagic;
         private uint listStart;
@@ -48,7 +48,10 @@ namespace Bitfish
             if (objectManager == 0)
                 return false;
             else
+            {
+                FindPlayerPointer();
                 return true;
+            }
         }
 
         internal GameObject Dump(Queue<ulong> blacklist)
@@ -93,6 +96,50 @@ namespace Bitfish
             }
             Console.WriteLine("Could not find any objects!");
             return null;
+        }
+
+        internal void FindPlayerPointer()
+        {
+            uint curr = blackMagic.ReadUInt(listStart);
+
+            for (int i = 0; i < SIZE; i++)
+            {
+                int type = blackMagic.ReadInt(curr + Offsets.ObjManager.TYPE);
+
+                if (type < 0 || type > 40)
+                    break;
+
+                if (type == (int)WowObjectType.Player)
+                {
+                    // check if this player has same pos as us, if so we can say its us
+                    Point player = new Point(
+                        blackMagic.ReadFloat(Offsets.Player.POS_X),
+                        blackMagic.ReadFloat(Offsets.Player.POS_Y),
+                        blackMagic.ReadFloat(Offsets.Player.POS_Z));
+
+                    Point other = new Point(
+                        blackMagic.ReadFloat(curr + Offsets.ObjManager.X_OFFSET),
+                        blackMagic.ReadFloat(curr + Offsets.ObjManager.Y_OFFSET),
+                        blackMagic.ReadFloat(curr + Offsets.ObjManager.Z_OFFSET));
+
+                    if(Point.Distance(player, other) < 0.1)
+                    {
+                        Console.WriteLine($"Found player pointer: [{curr:X}]");
+                        playerPtr = curr;
+                        return;
+                    }
+                }
+
+                curr += Offsets.ObjManager.NEXT;
+                curr = blackMagic.ReadUInt(curr);
+            }
+            Console.WriteLine("Player pointer was not found!");
+            playerPtr = 0;
+        }
+
+        internal uint GetPlayerPointer()
+        {
+            return playerPtr;
         }
     }
 }

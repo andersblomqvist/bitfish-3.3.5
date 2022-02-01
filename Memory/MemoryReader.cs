@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using Magic;
-using System.Windows.Forms;
 using System.Diagnostics;
 
 namespace Bitfish
@@ -17,7 +13,6 @@ namespace Bitfish
         private Hook hook;
         private Lua lua;
 
-        private int pId;
         private bool ready;
 
         public MemoryReader() 
@@ -25,17 +20,10 @@ namespace Bitfish
             blackMagic = new BlackMagic();
         }
 
-        internal bool OpenProcess()
+        internal bool OpenProcess(int id)
         {
-            List<Process> procList = new List<Process>(Process.GetProcessesByName("Wow"));
-            foreach(Process p in procList)
-            {
-                Console.WriteLine("Found Wow process! pid={0}", p.Id);
-                pId = p.Id;
-                objManager = new ObjectManager(blackMagic);
-            }
-
-            return blackMagic.Open(pId);
+            objManager = new ObjectManager(blackMagic);
+            return blackMagic.Open(id);
         }
 
         internal bool Init()
@@ -92,6 +80,19 @@ namespace Bitfish
                 blackMagic.ReadFloat(Offsets.Player.POS_X),
                 blackMagic.ReadFloat(Offsets.Player.POS_Y),
                 blackMagic.ReadFloat(Offsets.Player.POS_Z));
+        }
+
+        internal int ReadPlayerHealth()
+        {
+            uint ptr = objManager.GetPlayerPointer();
+            int health = blackMagic.ReadInt(ptr + Offsets.ObjManager.HEALTH_OFFSET);
+            if(health < 0 || health > 55000 || ptr == 0)
+            {
+                Console.WriteLine("Player health seems off, getting new player pointer.");
+                objManager.FindPlayerPointer();
+                return ReadPlayerHealth();
+            }
+            return health;
         }
 
         internal bool IsReady() { return ready; }

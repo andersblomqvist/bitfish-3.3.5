@@ -43,6 +43,10 @@ namespace Bitfish
 
         private Stats session;
 
+        // Tracks wheter the bot as failed to fish {maxFails} number times in a row
+        private bool failed;
+        private readonly int maxFails;
+
         public Bot(MemoryReader mem)
         {
             this.mem = mem;
@@ -62,6 +66,9 @@ namespace Bitfish
             clock.WorkerSupportsCancellation = true;
             clock.DoWork += new DoWorkEventHandler(ClockWork);
             clock.ProgressChanged += new ProgressChangedEventHandler(ClockTick);
+
+            failed = false;
+            maxFails = 3;
         }
 
         internal void Start()
@@ -98,10 +105,11 @@ namespace Bitfish
             int fails = 0;
 
             Point fishingPosition = mem.ReadPlayerPosition();
+            int health = mem.ReadPlayerHealth();
 
-            while(true && fails < 3)
+            while (true && fails < maxFails)
             {
-                if(CancellationPending(worker, e) || HasPlayerMoved(fishingPosition))
+                if(CancellationPending(worker, e) || HasPlayerMoved(fishingPosition) || IsPlayerDead())
                     break;
 
                 if (config.EnableTimer && session.seconds >= config.TimerDuration * 60)
@@ -129,7 +137,7 @@ namespace Bitfish
                 while(!fish && ticks < timeout)
                 {
                     // check if we should cancel
-                    if (CancellationPending(worker, e) || HasPlayerMoved(fishingPosition))
+                    if (CancellationPending(worker, e) || HasPlayerMoved(fishingPosition) || IsPlayerDead())
                         break;
 
                     Thread.Sleep(1000);
@@ -164,6 +172,9 @@ namespace Bitfish
 
                 Thread.Sleep(random.Next(500) + 500);
             }
+
+            if (fails == maxFails)
+                failed = true;
         }
 
         private void FishCaught(object sender, ProgressChangedEventArgs e)
@@ -195,26 +206,56 @@ namespace Bitfish
             clock.CancelAsync();
         }
 
+        /// <summary>
+        /// Routine when bot has finished fishing. In this state we can be either safe,
+        /// in combat or dead. If we are in combat we should just wait and die, release spirit
+        /// and check if logout.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Finished(object sender, RunWorkerCompletedEventArgs e)
         {
             Console.WriteLine("Bot has been stopped.");
             BitfishForm.instance.UpdateStatus(false);
 
+            if (clock.IsBusy)
+                clock.CancelAsync();
+
+            if (failed)
+                Console.WriteLine("The bot has been stopped due to too many failed fishing attempts!");
+
+            bool dead = IsPlayerDead();
+
+            if(dead)
+            {
+                // release spirit and check logout
+                mem.LuaDoString("RepopMe()");
+                Thread.Sleep(5000);
+                if(config.HearthstoneWhenDone)
+                    Console.WriteLine("Can't cast hearthstone when dead!");
+                if(config.LogoutWhenDone || config.LogoutWhenDead)
+                    mem.LuaDoString("Logout()");
+            }
+            else
+            {
+                // we are alive, but are we in combat?
+
+            }
+
             if (config.HearthstoneWhenDone)
             {
+                Console.WriteLine("Casting Hearthstone");
                 mem.LuaDoString("UseItemByName(\"Hearthstone\")");
                 if(config.LogoutWhenDone)
                 {
                     // wait 20s for hearthstone and loading
+                    Console.WriteLine("Waiting 20s for casting and loading screen until logout ...");
                     Thread.Sleep(20000);
                     mem.LuaDoString("Logout()");
                 }
             }
             else if (config.LogoutWhenDone)
                 mem.LuaDoString("Logout()");
-
-            if (clock.IsBusy)
-                clock.CancelAsync();
         }
 
         /// <summary>
@@ -225,6 +266,28 @@ namespace Bitfish
         {
             double d = Point.Distance(fishPos, mem.ReadPlayerPosition());
             if (d > 1) return true;
+            else return false;
+        }
+
+        /// <summary>
+        /// Compares previous health with current.
+        /// </summary>
+        /// <param name="health"></param>
+        /// <returns>True if current < previous</returns>
+        private bool HasPlayerLostHealth(int health)
+        {
+            int current = mem.ReadPlayerHealth();
+            if (current < health) return true;
+            else return false;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <returns>True if player is dead</returns>
+        private bool IsPlayerDead()
+        {
+            int health = mem.ReadPlayerHealth();
+            if (health <= 1) return true;
             else return false;
         }
 
