@@ -42,5 +42,7 @@ namespace Bitfish
         public const uint DEVICE_PTR1 = 0xC5DF88;
         public const uint DEVICE_PTR2 = 0x397C;
         public const uint END_SCENE = 0xA8;
+        public const uint ACTIVE_PLAYER_OBJ = 0x004038F0;
+        public const uint GET_LOC_TEXT = 0x007225E0;
     }
 }

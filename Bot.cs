@@ -105,11 +105,10 @@ namespace Bitfish
             int fails = 0;
 
             Point fishingPosition = mem.ReadPlayerPosition();
-            int health = mem.ReadPlayerHealth();
 
             while (true && fails < maxFails)
             {
-                if(CancellationPending(worker, e) || HasPlayerMoved(fishingPosition) || IsPlayerDead())
+                if (CancellationPending(worker, e) || HasPlayerMoved(fishingPosition) || IsPlayerDead())
                     break;
 
                 if (config.EnableTimer && session.seconds >= config.TimerDuration * 60)
@@ -227,19 +226,21 @@ namespace Bitfish
             bool dead = IsPlayerDead();
 
             if(dead)
-            {
-                // release spirit and check logout
-                mem.LuaDoString("RepopMe()");
-                Thread.Sleep(5000);
-                if(config.HearthstoneWhenDone)
-                    Console.WriteLine("Can't cast hearthstone when dead!");
-                if(config.LogoutWhenDone || config.LogoutWhenDead)
-                    mem.LuaDoString("Logout()");
-            }
+                ReleaseAndLogout();
             else
             {
                 // we are alive, but are we in combat?
+                bool combat = IsPlayerInCombat();
+                if(combat)
+                {
+                    // yea, let's wait till we die
+                    Console.WriteLine("We are in combat! Waiting to die ...");
+                    while (!IsPlayerDead())
+                        Thread.Sleep(1000);
 
+                    Console.WriteLine("Player has died.");
+                    ReleaseAndLogout();
+                }
             }
 
             if (config.HearthstoneWhenDone)
@@ -259,6 +260,21 @@ namespace Bitfish
         }
 
         /// <summary>
+        /// Releases spirit and check if we should logout
+        /// </summary>
+        private void ReleaseAndLogout()
+        {
+            Console.WriteLine("Releasing spirit");
+            Thread.Sleep(random.Next(1000) + 500);
+            mem.LuaDoString("RepopMe()");
+            Thread.Sleep(5000);
+            if (config.HearthstoneWhenDone)
+                Console.WriteLine("Can't cast hearthstone when dead!");
+            if (config.LogoutWhenDone || config.LogoutWhenDead)
+                mem.LuaDoString("Logout()");
+        }
+
+        /// <summary>
         /// Checks if player has moved away from its fishing position
         /// </summary>
         /// <returns>True if distance moved greater than 1, otherwise false</returns>
@@ -274,10 +290,11 @@ namespace Bitfish
         /// </summary>
         /// <param name="health"></param>
         /// <returns>True if current < previous</returns>
-        private bool HasPlayerLostHealth(int health)
+        private bool IsPlayerInCombat()
         {
-            int current = mem.ReadPlayerHealth();
-            if (current < health) return true;
+            mem.LuaDoString("combat = UnitAffectingCombat('player')");
+            string combat = mem.LuaGetLocalizedText("combat");
+            if (combat.Length >= 1) return true;
             else return false;
         }
 

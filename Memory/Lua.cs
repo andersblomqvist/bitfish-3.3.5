@@ -47,5 +47,37 @@ namespace Bitfish
             // Free memory allocated
             blackMagic.FreeMemory(doStringArgCodecave);
         }
+
+        internal string GetLocalizedText(string localVar)
+        {
+            if(hook.isHooked)
+            {
+                uint space = blackMagic.AllocateMemory(Encoding.UTF8.GetBytes(localVar).Length + 1);
+                
+                blackMagic.WriteBytes(space, Encoding.UTF8.GetBytes(localVar));
+
+                var asm = new[]
+                {
+                    "call " + Offsets.ACTIVE_PLAYER_OBJ,
+                    "mov ecx, eax",
+                    "push -1",
+                    "mov edx, " + space + "",
+                    "push edx",
+                    "call " + ((uint) Offsets.GET_LOC_TEXT) ,
+                    "retn",
+                };
+
+                string result = Encoding.UTF8.GetString(hook.InjectAndExecute(asm, true, out bool success));
+
+                if (!success)
+                    Console.WriteLine("Lua Localized text failed");
+
+                // Free memory allocated
+                blackMagic.FreeMemory(space);
+                return result;
+            }
+            return "";
+        }
     }
 }
+

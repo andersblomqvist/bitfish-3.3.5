@@ -14,6 +14,7 @@ namespace Bitfish
         private Lua lua;
 
         private bool ready;
+        private int processId;
 
         public MemoryReader() 
         {
@@ -22,6 +23,7 @@ namespace Bitfish
 
         internal bool OpenProcess(int id)
         {
+            processId = id;
             objManager = new ObjectManager(blackMagic);
             return blackMagic.Open(id);
         }
@@ -66,6 +68,11 @@ namespace Bitfish
         internal void LuaDoString(string command)
         {
             lua.DoString(command);
+        }
+
+        internal string LuaGetLocalizedText(string localVar)
+        {
+            return lua.GetLocalizedText(localVar);
         }
 
         internal void LuaMouseoverInteract(GameObject obj)
