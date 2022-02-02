@@ -11,38 +11,28 @@ namespace Bitfish
 {
     /// <summary>
     /// TODO:
-    /// Position stopper    Finished
-    /// ConfigHandler       Finished
-    /// Timer               Finished
-    /// Hearthstone         Finished
-    /// Logout              Finished
-    /// HP/death check      Finished   
-    /// Spirit Release      Finished
-    /// Logout when dead    Finished
-    /// Stats               kinda
-    /// Improved GUI
+    /// Logging
     /// </summary>
     public class Bot
     {
+        private struct Stats { public int seconds, startTime, fishCaught; }
+        private struct Player { ulong guid; int lastSeen; }
+
         private readonly BackgroundWorker worker;
         private readonly BackgroundWorker clock;
         private readonly MemoryReader mem;
         private readonly Random random;
-
         private Config config;
+        private Stats session;
 
         // blacklist these guids, clicked bobbers stay in memory for a small time
         // the que will hold last 5 bobbers
         private readonly Queue<ulong> prevBobbers;
 
-        private struct Stats
-        {
-            public int seconds;
-            public int startTime;
-            public int fishCaught;
-        }
-
-        private Stats session;
+        // Tracks players which have been close to us. The key(ulong) is an unique 
+        // identifier for each player. The value(int) holds the time when the player
+        // was spotted first time.
+        private Dictionary<ulong, int> playerTracker;
 
         // Tracks wheter the bot as failed to fish {maxFails} number times in a row
         private bool failed;
@@ -58,6 +48,7 @@ namespace Bitfish
             clock = new BackgroundWorker();
             random = new Random();
             prevBobbers = new Queue<ulong>();
+            playerTracker = new Dictionary<ulong, int>();
             session = new Stats();
 
             worker.WorkerReportsProgress = true;
@@ -77,6 +68,10 @@ namespace Bitfish
             afkTime = 312; // 5min 12s
         }
 
+        /// <summary>
+        /// Starts the bot. Before we start the fishing routune we first load current 
+        /// config from option GUI.
+        /// </summary>
         internal void Start()
         {
             // load config with current option values
@@ -87,14 +82,26 @@ namespace Bitfish
             {
                 if (config.AutoEquip)
                 {
+                    // equip selected fishing pole
                     string pole = BitfishForm.instance.GetFishingPole();
-                    Console.WriteLine($"Equipping: {pole}");
+                    Console.WriteLine($"Equipping: [{pole}]");
                     mem.LuaDoString($"EquipItemByName(\"{pole}\")");
                 }
 
                 worker.RunWorkerAsync();
                 clock.RunWorkerAsync();
             }
+        }
+
+        /// <summary>
+        /// Stops the bot. When stopped it can be started again and the current session
+        /// will keep on going as normal.
+        /// </summary>
+        internal void Stop()
+        {
+            Console.WriteLine("Stopping the bot ...");
+            worker.CancelAsync();
+            clock.CancelAsync();
         }
 
         /// <summary>
@@ -128,11 +135,37 @@ namespace Bitfish
 
             while (true && fails < maxFails)
             {
-                if (CancellationPending(worker, e) || HasPlayerMoved(fishingPosition) || IsPlayerDead())
+                #region BreakEvents
+
+                if (CancellationPending(worker, e))
                     break;
 
-                if (TimerExpired())
+                if (IsPlayerDead())
+                {
+                    Console.WriteLine("Player is dead.");
                     break;
+                }
+
+                if(HasPlayerMoved(fishingPosition))
+                {
+                    Console.WriteLine("Player has moved.");
+                    break;
+                }
+
+                if (TimerExpired())
+                {
+                    Console.WriteLine("Timer has expired.");
+                    break;
+                }    
+
+                if (config.NearbyPlayer && NearbyPlayers())
+                {
+                    Console.WriteLine("Detected nearby players for too long");
+                    break;
+                }
+                    
+
+                #endregion BreakEvents
 
                 AntiAfk();
 
@@ -244,13 +277,6 @@ namespace Bitfish
             BitfishForm.instance.UpdateTimer(session.seconds);
         }
 
-        internal void Stop()
-        {
-            Console.WriteLine("Stopping the bot ...");
-            worker.CancelAsync();
-            clock.CancelAsync();
-        }
-
         /// <summary>
         /// Routine when bot has finished fishing. In this state we can be either safe,
         /// in combat or dead. If we are in combat we should just wait and die, release spirit
@@ -303,6 +329,61 @@ namespace Bitfish
             }
             else if (config.LogoutWhenDone)
                 mem.LuaDoString("Logout()");
+        }
+
+        /// <summary>
+        /// Searches for nearby players and adds them to the playerTracker dict.
+        /// If a player has been close to us for too long we return true. Otherwise
+        /// we return false.
+        /// </summary>
+        /// <returns>True if player too close for too long time</returns>
+        private bool NearbyPlayers()
+        {
+            List<ulong> keysToRemove = new List<ulong>();
+
+            GameObject[] nearby = mem.GetNearbyPlayers(35);
+            foreach (GameObject player in nearby)
+            {
+                if (player == null)
+                    break;
+
+                if (!playerTracker.ContainsKey(player.guid))
+                {
+                    Console.WriteLine($"Adding key: {player.guid:X}");
+                    playerTracker.Add(player.guid, session.seconds);
+                }
+            }
+
+            foreach (ulong key in playerTracker.Keys)
+            {
+                // search nearby list
+                bool seen = false;
+                foreach (GameObject player in nearby)
+                {
+                    if (player == null)
+                        break;
+
+                    if (player.guid == key)
+                    {
+                        playerTracker.TryGetValue(key, out int lastSeen);
+                        seen = true;
+                        Console.WriteLine($"[{session.seconds}] Already seen player: {key:X} {lastSeen}");
+                        int time = session.seconds - lastSeen;
+                        if (time > 25) return true;
+                    }
+                }
+                // key is not close anymore, remove it
+                if (!seen) keysToRemove.Add(key);
+            }
+
+            foreach (ulong key in keysToRemove)
+            {
+                playerTracker.TryGetValue(key, out int value);
+                Console.WriteLine($"[{session.seconds}] Removing key: {key:X} {value}");
+                playerTracker.Remove(key);
+            }
+
+            return false;
         }
 
         /// <summary>

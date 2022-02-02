@@ -54,7 +54,7 @@ namespace Bitfish
             }
         }
 
-        internal GameObject Dump(Queue<ulong> blacklist)
+        internal GameObject Dump(Queue<ulong> blacklist, Point player)
         {
             uint curr = blackMagic.ReadUInt(listStart);
 
@@ -72,21 +72,26 @@ namespace Bitfish
                         blackMagic.ReadFloat(curr + Offsets.ObjManager.POS_Y),
                         blackMagic.ReadFloat(curr + Offsets.ObjManager.POS_Z));
 
-                    // Read the object name
-                    uint pName = blackMagic.ReadUInt(curr + 0x1A4);
-                    uint pStr = blackMagic.ReadUInt(pName + 0x90);
-                    string objectName = blackMagic.ReadASCIIString(pStr, 14);
-
-                    // Console.WriteLine($"i={i} [{curr.ToString("X")}] name={objectName}");
-
-                    if (objectName == "Fishing Bobber")
+                    // only search object close to player
+                    double d = Point.Distance(player, pos);
+                    if (d < 22)
                     {
-                        ulong guid = blackMagic.ReadUInt64(curr + Offsets.ObjManager.GUID);
-                        if(!blacklist.Contains(guid))
+                        // Read the object name
+                        uint pName = blackMagic.ReadUInt(curr + 0x1A4);
+                        uint pStr = blackMagic.ReadUInt(pName + 0x90);
+                        string objectName = blackMagic.ReadASCIIString(pStr, 14);
+
+                        // Console.WriteLine($"i={i} [{curr.ToString("X")}] name={objectName}");
+
+                        if (objectName == "Fishing Bobber")
                         {
-                            GameObject bobber = new GameObject(curr, guid, pos);
-                            // Console.WriteLine("Found bobber: [{0}] ({1}) {2}", curr.ToString("X"), pos, guid.ToString("X"));
-                            return bobber;
+                            ulong guid = blackMagic.ReadUInt64(curr + Offsets.ObjManager.GUID);
+                            if (!blacklist.Contains(guid))
+                            {
+                                GameObject bobber = new GameObject(curr, guid, pos);
+                                // Console.WriteLine("Found bobber: [{0}] ({1}) {2}", curr.ToString("X"), pos, guid.ToString("X"));
+                                return bobber;
+                            }
                         }
                     }
                 }
@@ -96,6 +101,49 @@ namespace Bitfish
             }
             Console.WriteLine("Could not find any objects!");
             return null;
+        }
+
+        /// <summary>
+        /// Searches for nearby players which are within a specified radius. Each player is a GameObject
+        /// in the array which is returned. If array is empty there is no close players.
+        /// </summary>
+        /// <param name="radius"></param>
+        /// <returns>An array of GameObjects which are nearby players</returns>
+        internal GameObject[] NearbyPlayers(Point player, double radius)
+        {
+            GameObject[] players = new GameObject[32];
+            int playerCount = 0;
+
+            uint curr = blackMagic.ReadUInt(listStart);
+
+            for (int i = 0; i < SIZE; i++)
+            {
+                int type = blackMagic.ReadInt(curr + Offsets.ObjManager.TYPE);
+
+                if (type < 0 || type > 40)
+                    break;
+
+                if (type == (int)WowObjectType.Player)
+                {
+                    Point pos = new Point(
+                        blackMagic.ReadFloat(curr + Offsets.ObjManager.X_OFFSET),
+                        blackMagic.ReadFloat(curr + Offsets.ObjManager.Y_OFFSET),
+                        blackMagic.ReadFloat(curr + Offsets.ObjManager.Z_OFFSET));
+
+                    // only search object close to player
+                    double d = Point.Distance(player, pos);
+                    if(d < radius && curr != playerPtr)
+                    {
+                        ulong guid = blackMagic.ReadUInt64(curr + Offsets.ObjManager.DESC);
+                        players[playerCount] = new GameObject(curr, guid, pos);
+                        playerCount++;
+                    }
+                }
+
+                curr += Offsets.ObjManager.NEXT;
+                curr = blackMagic.ReadUInt(curr);
+            }
+            return players;
         }
 
         internal void FindPlayerPointer()

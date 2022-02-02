@@ -23,6 +23,7 @@ namespace Bitfish
 
             // current object + ...
             public const uint NEXT = 0x3C;   // next object in list
+            public const uint DESC = 0x8;
             public const uint TYPE = 0x14;
             public const uint GUID = 0x30;
             public const uint POS_X = 0xE8;

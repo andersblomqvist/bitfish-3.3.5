@@ -178,6 +178,7 @@ namespace Bitfish
             LogoutWhenDeadCheckBox.Checked = cfg.LogoutWhenDead;
             HearthstoneCheckBox.Checked = cfg.HearthstoneWhenDone;
             InventoryFullCheckbox.Checked = cfg.StopIfInventoryFull;
+            NearybyPlayerCheckbox.Checked = cfg.NearbyPlayer;
             AutoEquipCheckbox.Checked = cfg.AutoEquip;
             FishingPoleSelector.SelectedIndex = cfg.FishingPole;
 
@@ -199,7 +200,8 @@ namespace Bitfish
                 (InventoryFullCheckbox.Checked ? 1 : 0) << 4 |
                 (AutoEquipCheckbox.Checked ? 1 : 0) << 5 |
                 (FishingPoleSelector.SelectedIndex & 0xF) << 6 |
-                (int)TimerDuration.Value << 10;
+                (NearybyPlayerCheckbox.Checked ? 1 : 0) << 10 |
+                (int)TimerDuration.Value << 11;
         }
 
         /// <summary>
@@ -222,6 +224,7 @@ namespace Bitfish
         private void HearthstoneCheckBox_CheckedChanged(object sender, EventArgs e) { CompareChecksum(); }
         private void InventoryFullCheckbox_CheckedChanged(object sender, EventArgs e) { CompareChecksum(); }
         private void FishingPoleSelector_SelectedIndexChanged(object sender, EventArgs e) { CompareChecksum(); }
+        private void NearybyPlayerCheckbox_CheckedChanged(object sender, EventArgs e) { CompareChecksum(); }
 
         private void AutoEquipCheckbox_CheckedChanged(object sender, EventArgs e) 
         {
@@ -264,11 +267,13 @@ namespace Bitfish
                 LogoutWhenDead = LogoutWhenDeadCheckBox.Checked,
                 HearthstoneWhenDone = HearthstoneCheckBox.Checked,
                 StopIfInventoryFull = InventoryFullCheckbox.Checked,
+                NearbyPlayer = NearybyPlayerCheckbox.Checked,
                 AutoEquip = AutoEquipCheckbox.Checked,
                 FishingPole = FishingPoleSelector.SelectedIndex
             };
         }
 
         #endregion
+
     }
 }

@@ -16,6 +16,7 @@ namespace Bitfish
         public bool LogoutWhenDead { get; set; }
         public bool HearthstoneWhenDone { get; set; }
         public bool StopIfInventoryFull { get; set; }
+        public bool NearbyPlayer { get; set; }
         public bool AutoEquip { get; set; }
         public int FishingPole { get; set; }
     }
@@ -70,14 +71,15 @@ namespace Bitfish
         internal void SetChecksum()
         {
             // 0000 0000 0000 0000 0000 0000 0000 0000
-            //                           |    ||| |||^- [0] Enable timer
-            //                           |    ||| ||^-- [1] Logout when done
-            //                           |    ||| |^--- [2] Logout when dead
-            //                           |    ||| ^---- [3] Hearthstone when done
-            //                           |    ||^------ [4] Inventory full
-            //                           |    |^------- [5] Auto Equip
-            //                           |    ^-------- [6-9] Fishing Pole
-            //                           ^------------- [10..] Timer duration
+            //                          ||    ||| |||^- [0] Enable timer
+            //                          ..    ||| ||^-- [1] Logout when done
+            //                          ..    ||| |^--- [2] Logout when dead
+            //                          ..    ||| ^---- [3] Hearthstone when done
+            //                          ..    ||^------ [4] Inventory full
+            //                          ..    |^------- [5] Auto Equip
+            //                          .|    ^-------- [6-9] Fishing Pole
+            //                          |^------------- [10] NearbyPlayer
+            //                          ^-------------- [11..] Timer duration
             configChecksum = (config.EnableTimer ? 1 : 0) |
                 (config.LogoutWhenDone ? 1 : 0) << 1 |
                 (config.LogoutWhenDead ? 1 : 0) << 2 |
@@ -85,7 +87,8 @@ namespace Bitfish
                 (config.StopIfInventoryFull ? 1 : 0) << 4 |
                 (config.AutoEquip ? 1 : 0) << 5 |
                 (config.FishingPole << 6) |
-                config.TimerDuration << 10;
+                (config.NearbyPlayer ? 1 : 0) << 10 |
+                config.TimerDuration << 11;
         }
 
         internal int GetChecksum()

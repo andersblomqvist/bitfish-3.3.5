@@ -48,7 +48,8 @@ namespace Bitfish
         /// <returns>GameObject with guid and pos if found, otherwise null</returns>
         internal GameObject FindBobber(Queue<ulong> blacklist)
         {
-            return objManager.Dump(blacklist);
+            Point player = ReadPlayerPosition();
+            return objManager.Dump(blacklist, player);
         }
 
         /// <summary>
@@ -81,6 +82,10 @@ namespace Bitfish
             lua.DoString("InteractUnit(\'mouseover\')");
         }
 
+        /// <summary>
+        /// Reads and returns local player position
+        /// </summary>
+        /// <returns></returns>
         internal Point ReadPlayerPosition()
         {
             return new Point(
@@ -89,6 +94,10 @@ namespace Bitfish
                 blackMagic.ReadFloat(Offsets.Player.POS_Z));
         }
 
+        /// <summary>
+        /// Reads and returns the local player health
+        /// </summary>
+        /// <returns></returns>
         internal int ReadPlayerHealth()
         {
             uint ptr = objManager.GetPlayerPointer();
@@ -100,6 +109,18 @@ namespace Bitfish
                 return ReadPlayerHealth();
             }
             return health;
+        }
+
+        /// <summary>
+        /// Searches for nearby players which are within a specified radius. Each player is a GameObject
+        /// in the array which is returned. If array is empty there is no close players.
+        /// </summary>
+        /// <param name="radius"></param>
+        /// <returns>An array of GameObjects which are nearby players</returns>
+        internal GameObject[] GetNearbyPlayers(double radius)
+        {
+            Point p = ReadPlayerPosition();
+            return objManager.NearbyPlayers(p, radius);
         }
 
         internal bool IsReady() { return ready; }
