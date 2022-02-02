@@ -38,11 +38,10 @@ namespace Bitfish
         /// Simulates a key press which is a combination of KeyDown and KeyUp.
         /// It also have some slight delay
         /// </summary>
-        public static void PressKey(int Key)
+        public static void PressKey(int Key, int msDuration)
         {
-            Key = 0x30 + Key;
             KeyDown("World of Warcraft", Key);
-            Thread.Sleep(150);
+            Thread.Sleep(msDuration);
             KeyUp("World of Warcraft", Key);
         }
     }

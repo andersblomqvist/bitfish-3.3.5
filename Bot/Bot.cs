@@ -48,6 +48,9 @@ namespace Bitfish
         private bool failed;
         private readonly int maxFails;
 
+        public readonly int afkTime;
+        private int nextAfkTime;
+
         public Bot(MemoryReader mem)
         {
             this.mem = mem;
@@ -70,6 +73,8 @@ namespace Bitfish
 
             failed = false;
             maxFails = 3;
+
+            afkTime = 312; // 5min 12s
         }
 
         internal void Start()
@@ -112,6 +117,8 @@ namespace Bitfish
             // If routine generates too many fails we stop
             int fails = 0;
 
+            nextAfkTime = afkTime + session.startTime;
+
             Point fishingPosition = mem.ReadPlayerPosition();
             session.startTime = session.seconds;
 
@@ -126,6 +133,8 @@ namespace Bitfish
 
                 if (TimerExpired())
                     break;
+
+                AntiAfk();
 
                 // Start cast
                 BeginFishing();
@@ -198,6 +207,19 @@ namespace Bitfish
 
             if (fails == maxFails)
                 failed = true;
+        }
+
+        /// <summary>
+        /// Player becomes afk after around 5min 30s. Move a bit to remove it.
+        /// </summary>
+        private void AntiAfk()
+        {
+            if(session.seconds - session.startTime > nextAfkTime)
+            {
+                KeyHandler.PressKey(0x53, 50); // press S key
+                KeyHandler.PressKey(0x57, 50); // press W key
+                nextAfkTime = session.seconds + afkTime;
+            }
         }
 
         private void FishCaught(object sender, ProgressChangedEventArgs e)
