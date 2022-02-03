@@ -205,9 +205,9 @@ namespace Bitfish
                     // click bobber after random amount of ms
                     Thread.Sleep(random.Next(600) + 500);
                     mem.LuaMouseoverInteract(bobber);
-                    Console.WriteLine("Caught fish - hopefully");
                     session.fishCaught++;
                     worker.ReportProgress(session.fishCaught);
+                    Console.WriteLine($"Caught fish: [{session.fishCaught}]");
 
                     // add guid to blacklist
                     prevBobbers.Enqueue(bobber.guid);

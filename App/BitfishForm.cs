@@ -32,40 +32,14 @@ namespace Bitfish
             savedChecksum = configHandler.GetChecksum();
             Console.WriteLine($"Got checksum: {savedChecksum:X}");
             UpdateOptions(configHandler.GetConfig());
+
+            WowIDList.Visible = false;
+            ConfirmProcessButton.Visible = false;
         }
 
         private void BitfishOnLoad(object sender, EventArgs e)
         {
-            // Search for processes.
-            processList = new List<Process>(Process.GetProcessesByName("Wow"));
-            wowList = new List<Process>();
-            int id = 0;
-            foreach (Process p in processList)
-            {
-                Console.WriteLine("Found Wow process! pid={0}", p.Id);
-                id = p.Id;
-                wowList.Add(p);
-            }
-
-            if (wowList.Count > 1)
-            {
-                Console.WriteLine("Multiple process was found"); ;
-                for (int i = 0; i < wowList.Count; i++)
-                    WowIDList.Items.Add(wowList[i].Id);
-                WowIDList.SelectedIndex = 0;
-                WowIDList.Visible = true;
-                ConfirmProcessButton.Visible = true;
-                StatusLabel.Text = "Please choose a specific process >";
-                StatusLabel.ForeColor = Color.Orange;
-            }
-            else if(wowList.Count <= 0)
-            {
-                Console.WriteLine("No processes was found.");
-            }
-            else
-            {
-                OpenProcess(id);
-            }
+            FindWowProcess();
         }
 
         private void OpenProcess(int id)
@@ -95,6 +69,48 @@ namespace Bitfish
                 StatusLabel.Text = "Failed. Start Wow and enter world";
                 StatusLabel.ForeColor = Color.Red;
             }
+        }
+
+        private void FindWowProcess()
+        {
+            // Search for processes.
+            processList = new List<Process>(Process.GetProcessesByName("Wow"));
+            wowList = new List<Process>();
+            int id = 0;
+            RetryButton.Visible = false;
+            foreach (Process p in processList)
+            {
+                Console.WriteLine("Found Wow process! pid={0}", p.Id);
+                id = p.Id;
+                wowList.Add(p);
+            }
+
+            if (wowList.Count > 1)
+            {
+                Console.WriteLine("Multiple process was found"); ;
+                for (int i = 0; i < wowList.Count; i++)
+                    WowIDList.Items.Add(wowList[i].Id);
+                WowIDList.SelectedIndex = 0;
+                WowIDList.Visible = true;
+                ConfirmProcessButton.Visible = true;
+                StatusLabel.Text = "Please choose a specific process >";
+                StatusLabel.ForeColor = Color.Orange;
+            }
+            else if (wowList.Count <= 0)
+            {
+                Console.WriteLine("No processes was found.");
+                StatusLabel.Text = "No process was found";
+                StatusLabel.ForeColor = Color.Red;
+                RetryButton.Visible = true;
+            }
+            else
+                OpenProcess(id);
+        }
+
+        private void RetryButton_Click(object sender, EventArgs e)
+        {
+            StatusLabel.Text = "";
+            FindWowProcess();
         }
 
         private void ConfirmProcessButton_Click(object sender, EventArgs e)
@@ -166,6 +182,8 @@ namespace Bitfish
             TimerLabel.Text = $"Time: {min}m {sec}s";
         }
 
+        #region OPTIONS
+
         /// <summary>
         /// Sets values for each option alternative
         /// </summary>
@@ -187,8 +205,6 @@ namespace Bitfish
             else
                 FishingPoleSelector.Enabled = true;
         }
-
-        #region OPTIONS
 
         private int GetCurrentOptionChecksum()
         {
@@ -274,6 +290,5 @@ namespace Bitfish
         }
 
         #endregion
-
     }
 }

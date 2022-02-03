@@ -36,6 +36,7 @@ namespace Bitfish
             this.label1 = new System.Windows.Forms.Label();
             this.FishCaughtLabel = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.NearybyPlayerCheckbox = new System.Windows.Forms.CheckBox();
             this.FishingPoleSelector = new System.Windows.Forms.ComboBox();
             this.AutoEquipCheckbox = new System.Windows.Forms.CheckBox();
             this.InventoryFullCheckbox = new System.Windows.Forms.CheckBox();
@@ -52,7 +53,7 @@ namespace Bitfish
             this.ConfirmProcessButton = new System.Windows.Forms.Button();
             this.WowIDList = new System.Windows.Forms.ComboBox();
             this.ProcIdLabel = new System.Windows.Forms.Label();
-            this.NearybyPlayerCheckbox = new System.Windows.Forms.CheckBox();
+            this.RetryButton = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TimerDuration)).BeginInit();
             this.CurrentSessionBox.SuspendLayout();
@@ -124,6 +125,17 @@ namespace Bitfish
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Options";
+            // 
+            // NearybyPlayerCheckbox
+            // 
+            this.NearybyPlayerCheckbox.AutoSize = true;
+            this.NearybyPlayerCheckbox.Location = new System.Drawing.Point(9, 135);
+            this.NearybyPlayerCheckbox.Name = "NearybyPlayerCheckbox";
+            this.NearybyPlayerCheckbox.Size = new System.Drawing.Size(171, 17);
+            this.NearybyPlayerCheckbox.TabIndex = 19;
+            this.NearybyPlayerCheckbox.Text = "Stop if player close for too long";
+            this.NearybyPlayerCheckbox.UseVisualStyleBackColor = true;
+            this.NearybyPlayerCheckbox.CheckedChanged += new System.EventHandler(this.NearybyPlayerCheckbox_CheckedChanged);
             // 
             // FishingPoleSelector
             // 
@@ -313,22 +325,23 @@ namespace Bitfish
             this.ProcIdLabel.Text = "Process ID: 7862";
             this.ProcIdLabel.Visible = false;
             // 
-            // NearybyPlayerCheckbox
+            // RetryButton
             // 
-            this.NearybyPlayerCheckbox.AutoSize = true;
-            this.NearybyPlayerCheckbox.Location = new System.Drawing.Point(9, 135);
-            this.NearybyPlayerCheckbox.Name = "NearybyPlayerCheckbox";
-            this.NearybyPlayerCheckbox.Size = new System.Drawing.Size(171, 17);
-            this.NearybyPlayerCheckbox.TabIndex = 19;
-            this.NearybyPlayerCheckbox.Text = "Stop if player close for too long";
-            this.NearybyPlayerCheckbox.UseVisualStyleBackColor = true;
-            this.NearybyPlayerCheckbox.CheckedChanged += new System.EventHandler(this.NearybyPlayerCheckbox_CheckedChanged);
+            this.RetryButton.Location = new System.Drawing.Point(284, 9);
+            this.RetryButton.Name = "RetryButton";
+            this.RetryButton.Size = new System.Drawing.Size(75, 23);
+            this.RetryButton.TabIndex = 18;
+            this.RetryButton.Text = "Retry";
+            this.RetryButton.UseVisualStyleBackColor = true;
+            this.RetryButton.Visible = false;
+            this.RetryButton.Click += new System.EventHandler(this.RetryButton_Click);
             // 
             // BitfishForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(368, 281);
+            this.Controls.Add(this.RetryButton);
             this.Controls.Add(this.ProcIdLabel);
             this.Controls.Add(this.WowIDList);
             this.Controls.Add(this.ConfirmProcessButton);
@@ -377,6 +390,7 @@ namespace Bitfish
         private System.Windows.Forms.CheckBox AutoEquipCheckbox;
         private System.Windows.Forms.ComboBox FishingPoleSelector;
         private System.Windows.Forms.CheckBox NearybyPlayerCheckbox;
+        private System.Windows.Forms.Button RetryButton;
     }
 }
 

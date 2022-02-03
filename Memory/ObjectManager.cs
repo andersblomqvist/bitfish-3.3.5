@@ -99,7 +99,6 @@ namespace Bitfish
                 curr += Offsets.ObjManager.NEXT;
                 curr = blackMagic.ReadUInt(curr);
             }
-            Console.WriteLine("Could not find any objects!");
             return null;
         }
 
