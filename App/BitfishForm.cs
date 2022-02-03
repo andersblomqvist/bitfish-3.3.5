@@ -19,6 +19,8 @@ namespace Bitfish
 
         private int savedChecksum;
 
+        private bool processFound;
+
         public BitfishForm()
         {
             if (instance == null)
@@ -35,6 +37,7 @@ namespace Bitfish
 
             WowIDList.Visible = false;
             ConfirmProcessButton.Visible = false;
+            processFound = false;
         }
 
         private void BitfishOnLoad(object sender, EventArgs e)
@@ -42,35 +45,11 @@ namespace Bitfish
             FindWowProcess();
         }
 
-        private void OpenProcess(int id)
-        {
-            // Open process
-            bool open = memoryReader.OpenProcess(id);
-            bool hooked = false;
-            if (open)
-            {
-                Console.WriteLine("Found Wow.exe process. Initializing ...");
-                hooked = memoryReader.Init();
-            }
-
-            if (open && hooked)
-            {
-                StatusLabel.Text = "Ready";
-                StatusLabel.ForeColor = Color.Green;
-                Console.WriteLine("Bot is ready");
-                WowIDList.Visible = false;
-                ConfirmProcessButton.Visible = false;
-                ProcIdLabel.Text = $"Process ID: {id}";
-                ProcIdLabel.Visible = true;
-            }
-            else
-            {
-                Console.WriteLine("Initialization failed!");
-                StatusLabel.Text = "Failed. Start Wow and enter world";
-                StatusLabel.ForeColor = Color.Red;
-            }
-        }
-
+        /// <summary>
+        /// Searches the process list for a process named Wow. If multiple is found
+        /// we allow user to select one with GUI. If no process was found the retry
+        /// button appears.
+        /// </summary>
         private void FindWowProcess()
         {
             // Search for processes.
@@ -83,6 +62,7 @@ namespace Bitfish
                 Console.WriteLine("Found Wow process! pid={0}", p.Id);
                 id = p.Id;
                 wowList.Add(p);
+                processFound = true;
             }
 
             if (wowList.Count > 1)
@@ -107,10 +87,46 @@ namespace Bitfish
                 OpenProcess(id);
         }
 
+        /// <summary>
+        /// Attepmts to open process with specified id.
+        /// </summary>
+        /// <param name="id"></param>
+        private void OpenProcess(int id)
+        {
+            // Open process
+            bool open = memoryReader.OpenProcess(id);
+            bool hooked = false;
+            if (open)
+                hooked = memoryReader.Init();
+
+            if (open && hooked)
+                SetReady();
+            else
+            {
+                Console.WriteLine("Initialization failed!");
+                StatusLabel.Text = "Please enter world and hit retry";
+                StatusLabel.ForeColor = Color.Red;
+                RetryButton.Visible = true;
+                StartButton.Enabled = false;
+                StopButton.Enabled = false;
+            }
+        }
+
+        /// <summary>
+        /// Tries to search for Wow process again or init the memory reader
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RetryButton_Click(object sender, EventArgs e)
         {
-            StatusLabel.Text = "";
-            FindWowProcess();
+            if (!processFound)
+                FindWowProcess();
+            else
+            {
+                bool status = memoryReader.Init();
+                if (status)
+                    SetReady();
+            }
         }
 
         private void ConfirmProcessButton_Click(object sender, EventArgs e)
@@ -122,16 +138,27 @@ namespace Bitfish
             OpenProcess(procId);
         }
 
-        internal string GetFishingPole()
+        private void SetReady()
         {
-            return FishingPoleSelector.GetItemText(FishingPoleSelector.SelectedItem);
+            StatusLabel.Text = "Ready";
+            StatusLabel.ForeColor = Color.Green;
+            Console.WriteLine("Bot is ready");
+            WowIDList.Visible = false;
+            ConfirmProcessButton.Visible = false;
+            ProcIdLabel.Text = $"Process ID: {memoryReader.GetProcessId()}";
+            ProcIdLabel.Visible = true;
+            RetryButton.Visible = false;
+            StartButton.Enabled = true;
         }
 
         private void StartButton_Click(object sender, EventArgs e)
         {
-            bot.Start();
-            UpdateStatus(true);
-            CurrentSessionBox.Visible = true;
+            bot.Start(out bool started);
+            if(started)
+            {
+                UpdateStatus(true);
+                CurrentSessionBox.Visible = true;
+            }
         }
 
         private void StopButton_Click(object sender, EventArgs e)
@@ -144,9 +171,17 @@ namespace Bitfish
         /// Updates the Start, Stop button and the status label.
         /// </summary>
         /// <param name="status"></param>
-        internal void UpdateStatus(bool running)
+        internal void UpdateStatus(bool running, bool memoryError = false)
         {
-            if(running)
+            if (memoryError)
+            {
+                StatusLabel.Text = "Please enter world before starting";
+                StatusLabel.ForeColor = Color.Red;
+                StopButton.Enabled = false;
+                return;
+            }
+
+            if (running)
             {
                 StatusLabel.Text = "Fishing ...";
                 StatusLabel.ForeColor = Color.Green;
@@ -180,6 +215,11 @@ namespace Bitfish
             int sec = seconds % 60;
             int min = seconds / 60;
             TimerLabel.Text = $"Time: {min}m {sec}s";
+        }
+
+        internal string GetFishingPole()
+        {
+            return FishingPoleSelector.GetItemText(FishingPoleSelector.SelectedItem);
         }
 
         #region OPTIONS

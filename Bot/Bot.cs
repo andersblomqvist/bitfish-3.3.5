@@ -72,8 +72,19 @@ namespace Bitfish
         /// Starts the bot. Before we start the fishing routune we first load current 
         /// config from option GUI.
         /// </summary>
-        internal void Start()
+        internal void Start(out bool started)
         {
+            started = false;
+
+            // Check if we need to reinit the object manager due to logout
+            if(!mem.StatusCheckObjectManager())
+            {
+                BitfishForm.instance.UpdateStatus(false, true);
+                Console.WriteLine("Can't find object list. Please enter world.");
+                started = false;
+                return;
+            }
+
             // load config with current option values
             config = BitfishForm.instance.ReadOptionValues();
 
@@ -90,6 +101,7 @@ namespace Bitfish
 
                 worker.RunWorkerAsync();
                 clock.RunWorkerAsync();
+                started = true;
             }
         }
 

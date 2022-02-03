@@ -30,13 +30,21 @@ namespace Bitfish
 
         internal bool Init()
         {
+            Console.WriteLine("Initializing Memory Reader ...");
+
             // find the object manager list
             ready = objManager.Init();
 
+            if (!ready)
+                Console.WriteLine("Object Manager init() failed! Please retry when entered world.");
+
             // hook
-            hook = new Hook(blackMagic);
-            hook.InitHook();
-            lua = new Lua(hook, blackMagic);
+            if(hook == null)
+            {
+                hook = new Hook(blackMagic);
+                hook.InitHook();
+                lua = new Lua(hook, blackMagic);
+            }
 
             ready = ready && hook.isHooked;
             return ready;
@@ -83,6 +91,15 @@ namespace Bitfish
         }
 
         /// <summary>
+        /// Finds the object manager list and player pointer again. Needed if we have done
+        /// a logout since last initialization.
+        /// </summary>
+        internal bool StatusCheckObjectManager()
+        {
+            return objManager.Init();
+        }
+
+        /// <summary>
         /// Reads and returns local player position
         /// </summary>
         /// <returns></returns>
@@ -121,6 +138,13 @@ namespace Bitfish
         {
             Point p = ReadPlayerPosition();
             return objManager.NearbyPlayers(p, radius);
+        }
+
+        internal int GetProcessId()
+        {
+            if(processId == 0)
+                Console.WriteLine("Warning: Process ID is 0");
+            return processId;
         }
 
         internal bool IsReady() { return ready; }
