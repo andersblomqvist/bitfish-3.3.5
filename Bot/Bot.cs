@@ -16,7 +16,6 @@ namespace Bitfish
     public class Bot
     {
         private struct Stats { public int seconds, startTime, fishCaught; }
-        private struct Player { ulong guid; int lastSeen; }
 
         private readonly BackgroundWorker worker;
         private readonly BackgroundWorker clock;
