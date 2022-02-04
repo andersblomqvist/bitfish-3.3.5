@@ -31,7 +31,7 @@ namespace Bitfish
         // Tracks players which have been close to us. The key(ulong) is an unique 
         // identifier for each player. The value(int) holds the time when the player
         // was spotted first time.
-        private Dictionary<ulong, int> playerTracker;
+        private readonly Dictionary<ulong, int> playerTracker;
 
         // Tracks wheter the bot as failed to fish {maxFails} number times in a row
         private bool failed;
@@ -120,7 +120,6 @@ namespace Bitfish
         /// </summary>
         private void BeginFishing()
         {
-            // KeyHandler.PressKey(config.CastKey);
             mem.LuaDoString("CastSpellByName('Fishing')");
             Thread.Sleep(800);
         }
@@ -136,9 +135,9 @@ namespace Bitfish
             int fails = 0;
 
             nextAfkTime = afkTime + session.startTime;
+            session.startTime = session.seconds;
 
             Point fishingPosition = mem.ReadPlayerPosition();
-            session.startTime = session.seconds;
 
             // wait a global for fish pole equip
             if (config.AutoEquip)
@@ -218,7 +217,6 @@ namespace Bitfish
                     mem.LuaMouseoverInteract(bobber);
                     session.fishCaught++;
                     worker.ReportProgress(session.fishCaught);
-                    Console.WriteLine($"Caught fish: [{session.fishCaught}]");
 
                     // add guid to blacklist
                     prevBobbers.Enqueue(bobber.guid);
@@ -317,11 +315,13 @@ namespace Bitfish
                 if(combat)
                 {
                     // yea, let's wait till we die
+                    // warning: this could potentially get stuck in a loop
                     Console.WriteLine("We are in combat! Waiting to die ...");
                     while (!IsPlayerDead())
                         Thread.Sleep(1000);
 
                     Console.WriteLine("Player has died.");
+                    Thread.Sleep(random.Next(1300) + 500);
                     ReleaseAndLogout();
                 }
             }
@@ -378,7 +378,7 @@ namespace Bitfish
                     {
                         playerTracker.TryGetValue(key, out int lastSeen);
                         seen = true;
-                        Console.WriteLine($"[{session.seconds}] Already seen player: {key:X} {lastSeen}");
+                        Console.WriteLine($"[{session.seconds}] Nearby player: {key:X} {lastSeen}");
                         int time = session.seconds - lastSeen;
                         if (time > 25) return true;
                     }

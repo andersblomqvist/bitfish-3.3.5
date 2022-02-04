@@ -92,11 +92,15 @@ namespace Bitfish
 
         /// <summary>
         /// Finds the object manager list and player pointer again. Needed if we have done
-        /// a logout since last initialization.
+        /// a logout since last initialization. The client might aswell been closed down so
+        /// make sure it's open.
         /// </summary>
         internal bool StatusCheckObjectManager()
         {
-            return objManager.Init();
+            if (blackMagic.IsProcessOpen)
+                return objManager.Init();
+            else
+                return false;
         }
 
         /// <summary>

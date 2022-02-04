@@ -70,6 +70,7 @@ namespace Bitfish
             // 
             // StartButton
             // 
+            this.StartButton.Enabled = false;
             this.StartButton.Location = new System.Drawing.Point(7, 39);
             this.StartButton.Name = "StartButton";
             this.StartButton.Size = new System.Drawing.Size(81, 30);
@@ -80,6 +81,7 @@ namespace Bitfish
             // 
             // StopButton
             // 
+            this.StopButton.Enabled = false;
             this.StopButton.Location = new System.Drawing.Point(94, 39);
             this.StopButton.Name = "StopButton";
             this.StopButton.Size = new System.Drawing.Size(60, 30);
@@ -341,7 +343,7 @@ namespace Bitfish
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(368, 281);
+            this.ClientSize = new System.Drawing.Size(368, 279);
             this.Controls.Add(this.RetryButton);
             this.Controls.Add(this.ProcIdLabel);
             this.Controls.Add(this.WowIDList);
