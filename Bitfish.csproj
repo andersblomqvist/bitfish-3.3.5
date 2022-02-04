@@ -140,6 +140,7 @@
       <DependentUpon>BitfishForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Bot\Bot.cs" />
+    <Compile Include="Bot\BotFunctions.cs" />
     <Compile Include="Common\GameObject.cs" />
     <Compile Include="Common\KeyHandler.cs" />
     <Compile Include="Config\ConfigHandler.cs" />
