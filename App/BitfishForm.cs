@@ -239,6 +239,7 @@ namespace Bitfish
             NearybyPlayerCheckbox.Checked = cfg.NearbyPlayer;
             AutoEquipCheckbox.Checked = cfg.AutoEquip;
             FishingPoleSelector.SelectedIndex = cfg.FishingPole;
+            WintergraspCheckbox.Checked = cfg.Wintergrasp;
 
             if (!AutoEquipCheckbox.Checked)
                 FishingPoleSelector.Enabled = false;
@@ -257,7 +258,8 @@ namespace Bitfish
                 (AutoEquipCheckbox.Checked ? 1 : 0) << 5 |
                 (FishingPoleSelector.SelectedIndex & 0xF) << 6 |
                 (NearybyPlayerCheckbox.Checked ? 1 : 0) << 10 |
-                (int)TimerDuration.Value << 11;
+                (WintergraspCheckbox.Checked ? 1 : 0) << 11 |
+                (int)TimerDuration.Value << 12;
         }
 
         /// <summary>
@@ -281,6 +283,7 @@ namespace Bitfish
         private void InventoryFullCheckbox_CheckedChanged(object sender, EventArgs e) { CompareChecksum(); }
         private void FishingPoleSelector_SelectedIndexChanged(object sender, EventArgs e) { CompareChecksum(); }
         private void NearybyPlayerCheckbox_CheckedChanged(object sender, EventArgs e) { CompareChecksum(); }
+        private void WintergraspCheckbox_CheckedChanged(object sender, EventArgs e) { CompareChecksum(); }
 
         private void AutoEquipCheckbox_CheckedChanged(object sender, EventArgs e) 
         {
@@ -325,10 +328,12 @@ namespace Bitfish
                 StopIfInventoryFull = InventoryFullCheckbox.Checked,
                 NearbyPlayer = NearybyPlayerCheckbox.Checked,
                 AutoEquip = AutoEquipCheckbox.Checked,
-                FishingPole = FishingPoleSelector.SelectedIndex
+                FishingPole = FishingPoleSelector.SelectedIndex,
+                Wintergrasp = WintergraspCheckbox.Checked
             };
         }
 
         #endregion
+
     }
 }

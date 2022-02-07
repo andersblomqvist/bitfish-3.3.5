@@ -54,6 +54,7 @@ namespace Bitfish
             this.WowIDList = new System.Windows.Forms.ComboBox();
             this.ProcIdLabel = new System.Windows.Forms.Label();
             this.RetryButton = new System.Windows.Forms.Button();
+            this.WintergraspCheckbox = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TimerDuration)).BeginInit();
             this.CurrentSessionBox.SuspendLayout();
@@ -110,6 +111,7 @@ namespace Bitfish
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.WintergraspCheckbox);
             this.groupBox1.Controls.Add(this.NearybyPlayerCheckbox);
             this.groupBox1.Controls.Add(this.FishingPoleSelector);
             this.groupBox1.Controls.Add(this.AutoEquipCheckbox);
@@ -123,7 +125,7 @@ namespace Bitfish
             this.groupBox1.Controls.Add(this.EnableTimerCheckBox);
             this.groupBox1.Location = new System.Drawing.Point(162, 34);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(197, 240);
+            this.groupBox1.Size = new System.Drawing.Size(197, 262);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Options";
@@ -156,7 +158,7 @@ namespace Bitfish
             "Blump Family Fishing Pole",
             "Darkwood Fishing Pole",
             "Crafty\'s Pole"});
-            this.FishingPoleSelector.Location = new System.Drawing.Point(9, 181);
+            this.FishingPoleSelector.Location = new System.Drawing.Point(9, 204);
             this.FishingPoleSelector.Name = "FishingPoleSelector";
             this.FishingPoleSelector.Size = new System.Drawing.Size(180, 21);
             this.FishingPoleSelector.TabIndex = 18;
@@ -165,7 +167,7 @@ namespace Bitfish
             // AutoEquipCheckbox
             // 
             this.AutoEquipCheckbox.AutoSize = true;
-            this.AutoEquipCheckbox.Location = new System.Drawing.Point(9, 158);
+            this.AutoEquipCheckbox.Location = new System.Drawing.Point(9, 181);
             this.AutoEquipCheckbox.Name = "AutoEquipCheckbox";
             this.AutoEquipCheckbox.Size = new System.Drawing.Size(136, 17);
             this.AutoEquipCheckbox.TabIndex = 14;
@@ -187,7 +189,7 @@ namespace Bitfish
             // SaveOptions
             // 
             this.SaveOptions.Enabled = false;
-            this.SaveOptions.Location = new System.Drawing.Point(8, 208);
+            this.SaveOptions.Location = new System.Drawing.Point(8, 231);
             this.SaveOptions.Name = "SaveOptions";
             this.SaveOptions.Size = new System.Drawing.Size(182, 24);
             this.SaveOptions.TabIndex = 7;
@@ -338,12 +340,23 @@ namespace Bitfish
             this.RetryButton.Visible = false;
             this.RetryButton.Click += new System.EventHandler(this.RetryButton_Click);
             // 
+            // WintergraspCheckbox
+            // 
+            this.WintergraspCheckbox.AutoSize = true;
+            this.WintergraspCheckbox.Location = new System.Drawing.Point(9, 158);
+            this.WintergraspCheckbox.Name = "WintergraspCheckbox";
+            this.WintergraspCheckbox.Size = new System.Drawing.Size(116, 17);
+            this.WintergraspCheckbox.TabIndex = 20;
+            this.WintergraspCheckbox.Text = "Stop if Wintergrasp";
+            this.WintergraspCheckbox.UseVisualStyleBackColor = true;
+            this.WintergraspCheckbox.CheckedChanged += new System.EventHandler(this.WintergraspCheckbox_CheckedChanged);
+            // 
             // BitfishForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(368, 279);
+            this.ClientSize = new System.Drawing.Size(368, 304);
             this.Controls.Add(this.RetryButton);
             this.Controls.Add(this.ProcIdLabel);
             this.Controls.Add(this.WowIDList);
@@ -394,6 +407,7 @@ namespace Bitfish
         private System.Windows.Forms.ComboBox FishingPoleSelector;
         private System.Windows.Forms.CheckBox NearybyPlayerCheckbox;
         private System.Windows.Forms.Button RetryButton;
+        private System.Windows.Forms.CheckBox WintergraspCheckbox;
     }
 }
 

@@ -17,6 +17,23 @@ namespace Bitfish
         // was spotted first time.
         private readonly Dictionary<ulong, int> playerTracker;
 
+        private readonly string[] NORTHREND_ZONES = new string[]
+        {
+            "Wintergrasp",
+            "Howling Fjord",
+            "Borean Tundra",
+            "Grizzly Hills",
+            "Zul'Drak",
+            "Dragonblight",
+            "Icecrown",
+            "Sholazar Basin",
+            "Crystalsong Forest",
+            "The Storm Peaks",
+            "Dalaran",
+            "The Frozen Sea",
+            "Hrothgar's Landing"
+        };
+
         public BotFunctions(MemoryReader mem)
         {
             this.mem = mem;
@@ -173,6 +190,34 @@ namespace Bitfish
                 slots += Convert.ToInt32(res);
             }
             return slots;
+        }
+
+        /// <summary>
+        /// Get the number of seconds until the next Wintergrasp battle. <br></br>
+        /// </summary>
+        /// <returns>The number of seconds until the next Wintergrasp battle, or nil if currently in progress.</returns>
+        internal int GetWGTimer()
+        {
+            mem.LuaDoString($"seconds = GetWintergraspWaitTime()");
+            string res = mem.LuaGetLocalizedText("seconds");
+            if(res.Length != 0)
+                return Convert.ToInt32(res);
+            return 0;
+        }
+
+        /// <summary>
+        /// Reads what zone player is in and determine wheter it's in northrend or not.
+        /// </summary>
+        /// <returns>The Zone name</returns>
+        internal bool IsPlayerInNorthrend()
+        {
+            mem.LuaDoString("zone = GetZoneText()");
+            string currentZone = mem.LuaGetLocalizedText("zone");
+            Console.WriteLine($"We are in: [{currentZone}]");
+            foreach(string zone in NORTHREND_ZONES)
+                if (zone.Equals(currentZone))
+                    return true;
+            return false;
         }
 
         /// <summary>

@@ -133,6 +133,8 @@ namespace Bitfish
 
             Point fishingPosition = mem.ReadPlayerPosition();
 
+            bool inNorthrend = func.IsPlayerInNorthrend();
+
             // wait a global for fish pole equip
             if (config.AutoEquip)
                 Thread.Sleep(1000);
@@ -170,11 +172,20 @@ namespace Bitfish
                     Console.WriteLine("Detected nearby players for too long");
                     break;
                 }
-                    
+
+                if(inNorthrend && config.Wintergrasp)
+                {
+                    // if it begins within 5 min, we stop
+                    if (func.GetWGTimer() < 300)
+                    {
+                        Console.WriteLine("Wintergrasp begins soon!");
+                        break;
+                    }
+                }
 
                 #endregion BreakEvents
 
-                // Prevent <Away>
+                // Prevent <Away> tag
                 if(func.IsPlayerAfk(ref session))
                 {
                     KeyHandler.PressKey(0x53, 50); // press S key
