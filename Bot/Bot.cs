@@ -149,8 +149,6 @@ namespace Bitfish
                     break;
                 }
 
-                #endregion BreakEvents
-
                 if (func.IsPlayerDead())
                 {
                     Console.WriteLine("Player is dead.");
