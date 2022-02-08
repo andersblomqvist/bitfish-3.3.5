@@ -214,10 +214,9 @@ namespace Bitfish
             mem.LuaDoString("zone = GetZoneText()");
             string currentZone = mem.LuaGetLocalizedText("zone");
             Console.WriteLine($"We are in: [{currentZone}]");
-            foreach(string zone in NORTHREND_ZONES)
-                if (zone.Equals(currentZone))
-                    return true;
-            return false;
+            if (currentZone == "Wintergrasp")
+                return true;
+            else return false;
         }
 
         /// <summary>

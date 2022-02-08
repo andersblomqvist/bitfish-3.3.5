@@ -133,7 +133,7 @@ namespace Bitfish
 
             Point fishingPosition = mem.ReadPlayerPosition();
 
-            bool inNorthrend = func.IsPlayerInNorthrend();
+            bool inWintergrasp = func.IsPlayerInNorthrend();
 
             // wait a global for fish pole equip
             if (config.AutoEquip)
@@ -173,7 +173,7 @@ namespace Bitfish
                     break;
                 }
 
-                if(inNorthrend && config.Wintergrasp)
+                if(inWintergrasp && config.Wintergrasp)
                 {
                     // if it begins within 5 min, we stop
                     if (func.GetWGTimer() < 300)
