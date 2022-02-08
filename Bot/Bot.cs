@@ -133,7 +133,7 @@ namespace Bitfish
 
             Point fishingPosition = mem.ReadPlayerPosition();
 
-            bool inWintergrasp = func.IsPlayerInNorthrend();
+            bool inWintergrasp = func.IsPlayerInWG();
 
             // wait a global for fish pole equip
             if (config.AutoEquip)

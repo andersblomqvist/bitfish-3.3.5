@@ -17,23 +17,6 @@ namespace Bitfish
         // was spotted first time.
         private readonly Dictionary<ulong, int> playerTracker;
 
-        private readonly string[] NORTHREND_ZONES = new string[]
-        {
-            "Wintergrasp",
-            "Howling Fjord",
-            "Borean Tundra",
-            "Grizzly Hills",
-            "Zul'Drak",
-            "Dragonblight",
-            "Icecrown",
-            "Sholazar Basin",
-            "Crystalsong Forest",
-            "The Storm Peaks",
-            "Dalaran",
-            "The Frozen Sea",
-            "Hrothgar's Landing"
-        };
-
         public BotFunctions(MemoryReader mem)
         {
             this.mem = mem;
@@ -206,10 +189,10 @@ namespace Bitfish
         }
 
         /// <summary>
-        /// Reads what zone player is in and determine wheter it's in northrend or not.
+        /// Reads what zone player is in and determine wheter we are in WG or not.
         /// </summary>
         /// <returns>The Zone name</returns>
-        internal bool IsPlayerInNorthrend()
+        internal bool IsPlayerInWG()
         {
             mem.LuaDoString("zone = GetZoneText()");
             string currentZone = mem.LuaGetLocalizedText("zone");
