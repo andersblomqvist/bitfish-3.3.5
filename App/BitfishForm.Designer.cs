@@ -36,6 +36,7 @@ namespace Bitfish
             this.label1 = new System.Windows.Forms.Label();
             this.FishCaughtLabel = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.WintergraspCheckbox = new System.Windows.Forms.CheckBox();
             this.NearybyPlayerCheckbox = new System.Windows.Forms.CheckBox();
             this.FishingPoleSelector = new System.Windows.Forms.ComboBox();
             this.AutoEquipCheckbox = new System.Windows.Forms.CheckBox();
@@ -54,7 +55,8 @@ namespace Bitfish
             this.WowIDList = new System.Windows.Forms.ComboBox();
             this.ProcIdLabel = new System.Windows.Forms.Label();
             this.RetryButton = new System.Windows.Forms.Button();
-            this.WintergraspCheckbox = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TimerDuration)).BeginInit();
             this.CurrentSessionBox.SuspendLayout();
@@ -129,6 +131,17 @@ namespace Bitfish
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Options";
+            // 
+            // WintergraspCheckbox
+            // 
+            this.WintergraspCheckbox.AutoSize = true;
+            this.WintergraspCheckbox.Location = new System.Drawing.Point(9, 158);
+            this.WintergraspCheckbox.Name = "WintergraspCheckbox";
+            this.WintergraspCheckbox.Size = new System.Drawing.Size(116, 17);
+            this.WintergraspCheckbox.TabIndex = 20;
+            this.WintergraspCheckbox.Text = "Stop if Wintergrasp";
+            this.WintergraspCheckbox.UseVisualStyleBackColor = true;
+            this.WintergraspCheckbox.CheckedChanged += new System.EventHandler(this.WintergraspCheckbox_CheckedChanged);
             // 
             // NearybyPlayerCheckbox
             // 
@@ -276,7 +289,7 @@ namespace Bitfish
             this.CurrentSessionBox.Controls.Add(this.FishCaughtLabel);
             this.CurrentSessionBox.Location = new System.Drawing.Point(7, 75);
             this.CurrentSessionBox.Name = "CurrentSessionBox";
-            this.CurrentSessionBox.Size = new System.Drawing.Size(149, 94);
+            this.CurrentSessionBox.Size = new System.Drawing.Size(149, 96);
             this.CurrentSessionBox.TabIndex = 14;
             this.CurrentSessionBox.TabStop = false;
             this.CurrentSessionBox.Text = "Current Session";
@@ -285,7 +298,7 @@ namespace Bitfish
             // OpenLogButton
             // 
             this.OpenLogButton.Enabled = false;
-            this.OpenLogButton.Location = new System.Drawing.Point(6, 62);
+            this.OpenLogButton.Location = new System.Drawing.Point(6, 66);
             this.OpenLogButton.Name = "OpenLogButton";
             this.OpenLogButton.Size = new System.Drawing.Size(137, 24);
             this.OpenLogButton.TabIndex = 6;
@@ -340,16 +353,25 @@ namespace Bitfish
             this.RetryButton.Visible = false;
             this.RetryButton.Click += new System.EventHandler(this.RetryButton_Click);
             // 
-            // WintergraspCheckbox
+            // label2
             // 
-            this.WintergraspCheckbox.AutoSize = true;
-            this.WintergraspCheckbox.Location = new System.Drawing.Point(9, 158);
-            this.WintergraspCheckbox.Name = "WintergraspCheckbox";
-            this.WintergraspCheckbox.Size = new System.Drawing.Size(116, 17);
-            this.WintergraspCheckbox.TabIndex = 20;
-            this.WintergraspCheckbox.Text = "Stop if Wintergrasp";
-            this.WintergraspCheckbox.UseVisualStyleBackColor = true;
-            this.WintergraspCheckbox.CheckedChanged += new System.EventHandler(this.WintergraspCheckbox_CheckedChanged);
+            this.label2.AutoSize = true;
+            this.label2.ForeColor = System.Drawing.SystemColors.ButtonShadow;
+            this.label2.Location = new System.Drawing.Point(20, 272);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(121, 13);
+            this.label2.TabIndex = 19;
+            this.label2.Text = "Wotlk 3.3.5 Build 12340";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.SystemColors.ButtonShadow;
+            this.label4.Location = new System.Drawing.Point(51, 257);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(62, 13);
+            this.label4.TabIndex = 20;
+            this.label4.Text = "Bitfish 1.0.0";
             // 
             // BitfishForm
             // 
@@ -357,6 +379,8 @@ namespace Bitfish
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(368, 304);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.RetryButton);
             this.Controls.Add(this.ProcIdLabel);
             this.Controls.Add(this.WowIDList);
@@ -367,9 +391,10 @@ namespace Bitfish
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.StatusLabel);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "BitfishForm";
-            this.Text = "Bitfish 3.3.5";
+            this.Text = "Bitfish";
             this.Load += new System.EventHandler(this.BitfishOnLoad);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -408,6 +433,8 @@ namespace Bitfish
         private System.Windows.Forms.CheckBox NearybyPlayerCheckbox;
         private System.Windows.Forms.Button RetryButton;
         private System.Windows.Forms.CheckBox WintergraspCheckbox;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label4;
     }
 }
 

@@ -55,7 +55,7 @@
     <ApplicationManifest>App\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>App\bitfish-icon-256.ico</ApplicationIcon>
+    <ApplicationIcon>bitfish-ico.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>45C6356B200F8A891FDDD2329D1E0637ECCF74B5</ManifestCertificateThumbprint>
@@ -185,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App\bitfish-icon-256.ico" />
+    <Content Include="bitfish-ico.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

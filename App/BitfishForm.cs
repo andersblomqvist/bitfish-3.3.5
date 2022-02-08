@@ -334,6 +334,5 @@ namespace Bitfish
         }
 
         #endregion
-
     }
 }
