@@ -171,6 +171,7 @@ namespace Bitfish
                 mem.LuaDoString($"freeSlots = GetContainerNumFreeSlots({i})");
                 string res = mem.LuaGetLocalizedText("freeSlots");
                 slots += Convert.ToInt32(res);
+                System.Threading.Thread.Sleep(10);
             }
             return slots;
         }

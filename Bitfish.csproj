@@ -72,6 +72,9 @@
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
+  <PropertyGroup>
+    <PublishSingleFile>true</PublishSingleFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BlackMagic">
       <HintPath>BlackMagic\BlackMagic.dll</HintPath>

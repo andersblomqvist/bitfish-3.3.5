@@ -134,6 +134,12 @@ namespace Bitfish
             Point fishingPosition = mem.ReadPlayerPosition();
 
             bool inWintergrasp = func.IsPlayerInWG();
+            int wgStartTime = 0;
+            if(inWintergrasp)
+            {
+                wgStartTime = func.GetWGTimer() + session.startTime;
+                Console.WriteLine($"[{session.seconds}] Wintergrasp will start at: [{wgStartTime}]");
+            }
 
             // wait a global for fish pole equip
             if (config.AutoEquip)
@@ -175,10 +181,9 @@ namespace Bitfish
 
                 if(inWintergrasp && config.Wintergrasp)
                 {
-                    // if it begins within 5 min, we stop
-                    if (func.GetWGTimer() < 300)
+                    if(session.seconds > wgStartTime - 300)
                     {
-                        Console.WriteLine("Wintergrasp begins soon!");
+                        Console.WriteLine("Wintergrasp is starting soon!");
                         break;
                     }
                 }
