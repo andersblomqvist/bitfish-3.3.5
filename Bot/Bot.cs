@@ -17,7 +17,7 @@ namespace Bitfish
     {
         public struct Stats 
         {
-            public static int afkTime = 300;
+            public static int afkTime = 290;
             public int
                 seconds,
                 startTime,
